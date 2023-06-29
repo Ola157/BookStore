@@ -17,7 +17,7 @@ const ViewMore = ({ amendBtn, doneBtn }) => {
     useEffect(() => {
         const findBookId = async () => {
             try {
-                let response = await axios.get(`http://localhost:8500/store/viewmore/${bookId}`, {})
+                let response = await axios.get(`http://localhost:8600/store/viewmore/${bookId}`, {})
                 let { finder } = response.data
                 setFound(finder)
             }
@@ -29,14 +29,16 @@ const ViewMore = ({ amendBtn, doneBtn }) => {
     }, [boo, []])
 
     useEffect(() => {
+
         const findUploader = async () => {
-            try {
-                let response = await axios.get(`http://localhost:8500/user/uploader/${foundBook.uploaderId}`, {})
-                let { uploader } = response.data
-                setUploader(uploader)
-            }
-            catch (err) {
-                console.error(err)
+            if (foundBook) {
+                try {
+                    let response = await axios.get(`http://localhost:8600/user/uploader/${foundBook.uploaderId}`, {})
+                    setUploader(response.data)
+                }
+                catch (err) {
+                    console.error(err)
+                }
             }
         }
         findUploader();
@@ -47,32 +49,34 @@ const ViewMore = ({ amendBtn, doneBtn }) => {
         <Navbar className='justify-content-center bg-black mb-2'>
             <FontAwesomeIcon className='text-white' icon={faBookOpenReader} size="lg" />
         </Navbar>
-        <Row className='bg-white m-1 border rounded'>
-            <Col className='text-start p-2'>
-                <Link to={`/allbooks/${userId}`} style={{ textDecoration: 'none', color: 'black' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
+        <Row className='d-flex justify-content-center m-1'>
+            <Col className='border rounded text-center bod' lg={4}>
+                <Col className='text-start p-2'>
+                    <Link to={`/allbooks/${userId}`} style={{ textDecoration: 'none', color: 'white' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
+                </Col>
+                <hr className='my-0'></hr>
+                <Col className='text-center my-2'>
+                    Book Details
+                </Col>
+                <hr className='my-0'></hr>
+                {foundBook ?
+                    <div>
+                        <Col className='text-white'>Author - <span>{foundBook.edit === false ? foundBook.name : <input className='border rounded' onInput={(event) => handleName(event.target.value)} />}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-white'>Title - <span>{foundBook.edit === false ? foundBook.title : <input className='border rounded' onInput={(event) => handleTitle(event.target.value)} />}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-white'>Description - <span>{foundBook.edit === false ? foundBook.descr : <input className='border rounded' onInput={(event) => handleDesc(event.target.value)} />}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-white'>Page Number - <span>{foundBook.edit === false ? foundBook.pageNumbers : <input className='border rounded' onInput={(event) => handlePageNumber(event.target.value)} />}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-white'>Genre - <span>{foundBook.edit === false ? foundBook.genre : <input className='border rounded' onInput={(event) => handleGenre(event.target.value)} />}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-white'>Added by - <span style={{ fontStyle: 'italic' }}>{uploader.username}</span></Col>
+                        <hr className='my-1'></hr>
+                        <Col className='text-center'> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => amendBtn('edit', foundBook._id)}>edit</button> : <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => doneBtn({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre })}>done</button>}</Col>
+                    </div>
+                    : ''}
             </Col>
-            <hr className='my-0'></hr>
-            <Col className='text-center my-2'>
-                Book Details
-            </Col>
-            <hr className='my-0'></hr>
-            {foundBook ?
-                <div>
-                    <Col lg={6} md={6} sm={12} xs={12}>Author - <span className='bod'>{foundBook.edit === false ? foundBook.name : <input onInput={(event) => handleName(event.target.value)} />}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={6} md={6} sm={12} xs={12}>Title - <span className='bod'>{foundBook.edit === false ? foundBook.title : <input onInput={(event) => handleTitle(event.target.value)} />}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={6} md={6} sm={12} xs={12}>Description - <span className='bod'>{foundBook.edit === false ? foundBook.descr : <input onInput={(event) => handleDesc(event.target.value)} />}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={6} md={6} sm={12} xs={12}>Page Number - <span className='bod'>{foundBook.edit === false ? foundBook.pageNumbers : <input onInput={(event) => handlePageNumber(event.target.value)} />}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={6} md={6} sm={12} xs={12}>Genre - <span className='bod'>{foundBook.edit === false ? foundBook.genre : <input onInput={(event) => handleGenre(event.target.value)} />}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={6} md={6} sm={12} xs={12}>Added by - <span style={{ fontStyle: 'italic' }}>{uploader.username}</span></Col>
-                    <hr className='my-1'></hr>
-                    <Col lg={2} md={6} sm={12} xs={12} className='text-center'> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1' onClick={() => amendBtn('edit', foundBook._id)}>edit</button> : <button className='border rounded py-0 w-50 m-1' onClick={() => doneBtn({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre })}>done</button>}</Col>
-                </div>
-                : ''}
         </Row>
     </Container>)
 }

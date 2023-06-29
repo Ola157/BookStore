@@ -11,7 +11,7 @@ import useMultiple from './custom-hooks/useMultiple';
 
 
 function App() {
-  let [name, handleName, title, handleTitle, descr, handleDesc, pageNumbers, handlePageNumber, genre, handleGenre, boo, handleBoo, edit, handleEdit] = useMultiple()
+  let [boo, handleBoo, edit, handleEdit] = useMultiple()
 
 
   const doneBtn = async (value) => {
@@ -19,7 +19,7 @@ function App() {
     if (name !== '' && title !== '' && descr !== '' && pageNumbers !== '' && genre !== '') {
 
       try {
-        let response = await axios.patch(`http://localhost:8500/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
+        let response = await axios.patch(`http://localhost:8600/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           }
@@ -38,7 +38,7 @@ function App() {
     switch (true) {
       case any === 'edit':
         try {
-          let response = await axios.patch(`http://localhost:8500/store/edit/${id}`, { edit: true }, {
+          let response = await axios.patch(`http://localhost:8600/store/edit/${id}`, { edit: true }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             }
@@ -53,7 +53,7 @@ function App() {
 
       case any === 'del':
         try {
-          let response = await axios.delete(`http://localhost:8500/store/delete/${id}`)
+          let response = await axios.delete(`http://localhost:8600/store/delete/${id}`)
           handleBoo(true)
         }
         catch (err) {

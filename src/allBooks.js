@@ -22,7 +22,7 @@ const AllBooks = () => {
     useEffect(() => {
         const getAllbooks = async () => {
             try {
-                let response = await axios.get("http://localhost:8500/store/allbooks", {})
+                let response = await axios.get("http://localhost:8600/store/allbooks", {})
                 let { allbooks } = response.data
                 setName(allbooks)
             }
@@ -34,7 +34,7 @@ const AllBooks = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                let response = await axios.get(`http://localhost:8500/user/fetchuploader/${userId}`, {})
+                let response = await axios.get(`http://localhost:8600/user/fetchuploader/${userId}`, {})
                 let { userName } = response.data
                 setUser(userName)
             }
@@ -50,7 +50,7 @@ const AllBooks = () => {
         if (any === 'addbook') {
             if (name !== '' && title !== '' && pageNumbers !== '' && descr !== '' && genre !== '') {
                 try {
-                    const response = await axios.post("http://localhost:8500/store/addbook", { name, title, pageNumbers, descr, genre, edit: false, uploaderId },
+                    const response = await axios.post("http://localhost:8600/store/addbook", { name, title, pageNumbers, descr, genre, edit: false, uploaderId },
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,7 +82,7 @@ const AllBooks = () => {
                     <FontAwesomeIcon className='text-white' icon={faBookOpenReader} size="lg" />
                 </div>
 
-                <div>
+                <div className='d-xs-none'>
                     <Nav className="me-auto">
                         <NavDropdown title={awesome} id="basic-nav-dropdown" className='bg-black '>
                             <NavDropdown.Item >{user.username}</NavDropdown.Item>
@@ -125,12 +125,12 @@ const AllBooks = () => {
 
         <Row className='d-flex justify-content-evenly m-1 '>
             {bookName.length > 0 ?
-                bookName.map((book, i) => <Col lg={2} md={3} sm={3} xs={12} key={i} className='border rounded p-1 py-3 text-center m-1 bookIcon'>
+                bookName.map((book, i) => <Col lg={2} md={3} sm={3} xs={12} key={i} className='p-1 py-3 text-center m-1 bookIcon'>
                     <Col className='m-1'>{book.title}</Col>
                     <hr className='my-0'></hr>
                     <Col className='m-1'>Author: {book.name}</Col>
                     <hr className='my-0'></hr>
-                    <Col className='py-0 m-2'><button className='border rounded py-0 my-1' onClick={() => pageBtn(book._id)}>view more</button></Col>
+                    <Col className='py-0 m-2'><button className='border rounded py-0 my-1 btnAny' onClick={() => pageBtn(book._id)}>view more</button></Col>
                 </Col>
                 )
                 : <Col>No Books Yet</Col>}

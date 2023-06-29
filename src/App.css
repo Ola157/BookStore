@@ -11,13 +11,38 @@
 }
 
 .bookIcon {
-    background-color: rgb(14, 14, 14);
-    color: rgb(240, 246, 58);
+    background-color: rgba(26, 24, 24, 0.7);
+    border-radius: 3%;
+    color: rgb(253, 253, 249);
     height: max-content;
+    box-shadow: inset 0em -.1em 1em white;
 }
 
 .bookIcon:hover {
-    background-color: rgb(24, 24, 24);
-    box-shadow: inset 0em -.1em rgb(221, 255, 0);
+    background-color: rgba(26, 24, 24, 0.7);
+    box-shadow: inset 0em -.1em 1em gold;
+}
+
+.btnAny:hover {
+    background-color: rgb(102, 65, 28);
+    box-shadow: inset 0em -.1em rgb(84, 97, 2);
     transition: ease-in-out .5s;
+}
+
+.btnAny {
+    background-color: rgba(95, 92, 92, 0.4);
+    color: white;
+}
+
+.uploads {
+    background-color: rgba(26, 24, 24, 0.9);
+    color: white;
+}
+
+.bod {
+    background-color: rgba(26, 24, 24, 0.7);
+    border-radius: 3%;
+    color: rgb(253, 253, 249);
+    height: max-content;
+    box-shadow: inset 0em -.1em 1em white;
 }

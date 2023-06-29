@@ -17,7 +17,7 @@ const HomePage = () => {
         switch (true) {
             case any === 'login':
                 try {
-                    const response = await axios.post("http://localhost:8500/user/login", { username: user, password },
+                    const response = await axios.post("http://localhost:8600/user/login", { username: user, password },
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -40,7 +40,7 @@ const HomePage = () => {
 
             case any === 'signup':
                 try {
-                    const response = await axios.post("http://localhost:8500/user/register", { username: user, password },
+                    const response = await axios.post("http://localhost:8600/user/register", { username: user, password },
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
