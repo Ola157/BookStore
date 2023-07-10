@@ -7,12 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpenReader } from '@fortawesome/free-solid-svg-icons';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import useMultiple from './custom-hooks/useMultiple';
+import { useSelector } from 'react-redux';
 
-const ViewMore = ({ amendBtn, doneBtn }) => {
-    let { bookId, userId } = useParams()
+const ViewMore = ({ handleEditdelete, handleEditDone }) => {
+    let { bookId, userName } = useParams()
     let [foundBook, setFound] = useState('')
     let [name, handleName, title, handleTitle, descr, handleDesc, pageNumbers, handlePageNumber, genre, handleGenre, boo, handleBoo] = useMultiple('');
     let [uploader, setUploader] = useState('')
+    let myJwt = useSelector(state => state.accessToken)
 
     useEffect(() => {
         const findBookId = async () => {
@@ -50,9 +52,9 @@ const ViewMore = ({ amendBtn, doneBtn }) => {
             <FontAwesomeIcon className='text-white' icon={faBookOpenReader} size="lg" />
         </Navbar>
         <Row className='d-flex justify-content-center m-1'>
-            <Col className='border rounded text-center bod' lg={4}>
+            <Col className='border rounded text-center bookUploads' lg={4}>
                 <Col className='text-start p-2'>
-                    <Link to={`/allbooks/${userId}`} style={{ textDecoration: 'none', color: 'white' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
+                    <Link to={`/allbooks/${userName}`} style={{ textDecoration: 'none', color: 'black' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
                 </Col>
                 <hr className='my-0'></hr>
                 <Col className='text-center my-2'>
@@ -61,23 +63,23 @@ const ViewMore = ({ amendBtn, doneBtn }) => {
                 <hr className='my-0'></hr>
                 {foundBook ?
                     <div>
-                        <Col className='text-white'>Author - <span>{foundBook.edit === false ? foundBook.name : <input className='border rounded' onInput={(event) => handleName(event.target.value)} />}</span></Col>
+                        <Col>Author - <span>{foundBook.edit === false ? foundBook.name : <input className='border rounded text-center' placeholder='author name' onInput={(event) => handleName(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-white'>Title - <span>{foundBook.edit === false ? foundBook.title : <input className='border rounded' onInput={(event) => handleTitle(event.target.value)} />}</span></Col>
+                        <Col>Title - <span>{foundBook.edit === false ? foundBook.title : <input className='border rounded text-center' placeholder='book title' onInput={(event) => handleTitle(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-white'>Description - <span>{foundBook.edit === false ? foundBook.descr : <input className='border rounded' onInput={(event) => handleDesc(event.target.value)} />}</span></Col>
+                        <Col>Description - <span>{foundBook.edit === false ? foundBook.descr : <input className='border rounded text-center' placeholder='description' onInput={(event) => handleDesc(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-white'>Page Number - <span>{foundBook.edit === false ? foundBook.pageNumbers : <input className='border rounded' onInput={(event) => handlePageNumber(event.target.value)} />}</span></Col>
+                        <Col>Page Number - <span>{foundBook.edit === false ? foundBook.pageNumbers : <input className='border rounded text-center' placeholder='page numbers' onInput={(event) => handlePageNumber(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-white'>Genre - <span>{foundBook.edit === false ? foundBook.genre : <input className='border rounded' onInput={(event) => handleGenre(event.target.value)} />}</span></Col>
+                        <Col >Genre - <span>{foundBook.edit === false ? foundBook.genre : <input className='border rounded text-center' placeholder='genre' onInput={(event) => handleGenre(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-white'>Added by - <span style={{ fontStyle: 'italic' }}>{uploader.username}</span></Col>
+                        <Col >Added by - <span style={{ fontStyle: 'italic' }}>{uploader.username}</span></Col>
                         <hr className='my-1'></hr>
-                        <Col className='text-center'> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => amendBtn('edit', foundBook._id)}>edit</button> : <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => doneBtn({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre })}>done</button>}</Col>
+                        <Col> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditdelete('edit', foundBook._id, myJwt)}>edit</button> : <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditDone({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre })}>done</button>}</Col>
                     </div>
                     : ''}
             </Col>
         </Row>
-    </Container>)
+    </Container >)
 }
 export default ViewMore;

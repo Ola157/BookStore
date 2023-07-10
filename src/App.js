@@ -1,74 +1,60 @@
 import './App.css';
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import HomePage from './home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AllBooks from './allBooks';
 import ViewMore from './viewmore';
-import BookAdded from './bookadded';
-import axios from 'axios';
+import MyUploads from './myUploads';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleAllSearch, handleBookAdd, handleDone, handleEdit, handleSignOut, handleSignupLogin } from './myRedux/myActions';
 import useMultiple from './custom-hooks/useMultiple';
 
-
 function App() {
-  let [boo, handleBoo, edit, handleEdit] = useMultiple()
+  let userLogin = useSelector(state => state.username)
+  let dispatch = useDispatch();
+  const navigate = useNavigate();
 
-
-  const doneBtn = async (value) => {
-    let { foundBookId, name, title, descr, pageNumbers, genre } = value
-    if (name !== '' && title !== '' && descr !== '' && pageNumbers !== '' && genre !== '') {
-
-      try {
-        let response = await axios.patch(`http://localhost:8600/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }
-        })
-        handleBoo(true)
-        alert(response.data)
-      }
-      catch (err) {
-        console.error(err)
-      }
+  useEffect(() => {
+    if (userLogin) {
+      navigate(`/allbooks/${userLogin}`)
     }
-    else { alert('inputs cants be blank') }
+    if (userLogin === '') {
+      navigate('/')
+    }
+  }, [userLogin])
+
+  const handleEditDone = (value) => {
+    dispatch(handleDone(value))
   }
 
-  const amendBtn = async (any, id) => {
-    switch (true) {
-      case any === 'edit':
-        try {
-          let response = await axios.patch(`http://localhost:8600/store/edit/${id}`, { edit: true }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            }
-          })
-          handleBoo(true)
-        }
-        catch (err) {
-          console.error(err)
-        }
-        handleBoo(false);
-        break;
-
-      case any === 'del':
-        try {
-          let response = await axios.delete(`http://localhost:8600/store/delete/${id}`)
-          handleBoo(true)
-        }
-        catch (err) {
-          console.error(err)
-        }
-        break;
-    }
+  const handleEditdelete = (any, id, myJwt) => {
+    dispatch(handleEdit(any, id, myJwt))
   }
+
+  const handle_Login_SignUp = (value) => {
+    dispatch(handleSignupLogin(value))
+  }
+
+  const handleAddBook = (value) => {
+    dispatch(handleBookAdd(value))
+  }
+
+  const handleLogout = () => {
+    dispatch(handleSignOut())
+  }
+
+  const handleSearch = (bookName) => {
+    dispatch(handleAllSearch(bookName))
+  }
+
 
   return (
     <Routes>
-      <Route path='/*' element={<HomePage />} />
-      <Route path='/allbooks/:userId' element={<AllBooks boo={boo} />} />
-      <Route path='/viewmore/:bookId/:userId' element={<ViewMore amendBtn={amendBtn} doneBtn={doneBtn} />} />
-      <Route path='/bookadded/:userId' element={<BookAdded amendBtn={amendBtn} doneBtn={doneBtn} />} />
+      <Route path='/*' element={<HomePage handle_Login_SignUp={handle_Login_SignUp} />} />
+      <Route path='/allbooks/:userName' element={<AllBooks handleLogout={handleLogout} handleSearch={handleSearch} />} />
+      <Route path='/viewmore/:bookId/:userName' element={<ViewMore handleEditdelete={handleEditdelete} handleEditDone={handleEditDone} />} />
+      <Route path='/myUploads/:userName' element={<MyUploads handleEditdelete={handleEditdelete} handleEditDone={handleEditDone} handleAddBook={handleAddBook} />} />
     </Routes>
   );
 }

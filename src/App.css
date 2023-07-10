@@ -8,29 +8,48 @@
     background-image: url(./assets/bookstore.jpg);
     background-position: center;
     background-size: cover;
+    background-color: black;
 }
 
 .bookIcon {
-    background-color: rgba(26, 24, 24, 0.7);
+    background-color: rgba(247, 242, 242, 0.8);
     border-radius: 3%;
-    color: rgb(253, 253, 249);
-    height: max-content;
-    box-shadow: inset 0em -.1em 1em white;
+    color: rgb(4, 4, 4);
+    height: 10em;
+    font-weight: bold;
+    box-shadow: -0em 0em 0.5em 0.3em rgb(46, 48, 46);
+}
+
+.bookUploads {
+    background-color: rgba(247, 242, 242, 0.9);
+    border-radius: 3%;
+    color: rgb(4, 4, 4);
+    height: 100%;
+    font-weight: bold;
+    box-shadow: inset 0em -.1em 4em rgb(6, 6, 6);
+}
+
+.bookUploads:hover {
+    background-color: rgba(247, 242, 242, 0.9);
+    box-shadow: inset 0em -.1em 4em rgb(50, 49, 49);
+    transition: ease-in-out 1s;
 }
 
 .bookIcon:hover {
-    background-color: rgba(26, 24, 24, 0.7);
-    box-shadow: inset 0em -.1em 1em gold;
+    background-color: rgba(232, 229, 229, 0.7);
+    box-shadow: inset 0em -.1em 5em rgb(142, 174, 174);
+    transition: ease-in-out 1s;
+    border-color: goldenrod;
 }
 
 .btnAny:hover {
-    background-color: rgb(102, 65, 28);
-    box-shadow: inset 0em -.1em rgb(84, 97, 2);
+    background-color: rgb(54, 50, 47);
+    box-shadow: inset 0em -.1em rgb(48, 48, 48);
     transition: ease-in-out .5s;
 }
 
 .btnAny {
-    background-color: rgba(95, 92, 92, 0.4);
+    background-color: rgb(16, 16, 16);
     color: white;
 }
 
