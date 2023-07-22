@@ -9,12 +9,13 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import useMultiple from './custom-hooks/useMultiple';
 import { useSelector } from 'react-redux';
 
-const ViewMore = ({ handleEditdelete, handleEditDone }) => {
+const ViewMore = ({ handleEditdelete, handleEditDone, handleResponse }) => {
     let { bookId, userName } = useParams()
     let [foundBook, setFound] = useState('')
     let [name, handleName, title, handleTitle, descr, handleDesc, pageNumbers, handlePageNumber, genre, handleGenre, boo, handleBoo] = useMultiple('');
     let [uploader, setUploader] = useState('')
-    let myJwt = useSelector(state => state.accessToken)
+    let myJwt = localStorage.getItem('accessToken')
+    let userId = useSelector(state => state.id)
 
     useEffect(() => {
         const findBookId = async () => {
@@ -54,7 +55,7 @@ const ViewMore = ({ handleEditdelete, handleEditDone }) => {
         <Row className='d-flex justify-content-center m-1'>
             <Col className='border rounded text-center bookUploads' lg={4}>
                 <Col className='text-start p-2'>
-                    <Link to={`/allbooks/${userName}`} style={{ textDecoration: 'none', color: 'black' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
+                    <Link to={`/allbooks/${userName}`} onClick={() => handleResponse()} style={{ textDecoration: 'none', color: 'black' }}> <FontAwesomeIcon icon={faArrowLeft} className='mx-2' />back</Link>
                 </Col>
                 <hr className='my-0'></hr>
                 <Col className='text-center my-2'>
@@ -74,8 +75,8 @@ const ViewMore = ({ handleEditdelete, handleEditDone }) => {
                         <Col >Genre - <span>{foundBook.edit === false ? foundBook.genre : <input className='border rounded text-center' placeholder='genre' onInput={(event) => handleGenre(event.target.value)} />}</span></Col>
                         <hr className='my-1'></hr>
                         <Col >Added by - <span style={{ fontStyle: 'italic' }}>{uploader.username}</span></Col>
-                        <hr className='my-1'></hr>
-                        <Col> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditdelete('edit', foundBook._id, myJwt)}>edit</button> : <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditDone({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre })}>done</button>}</Col>
+                        {userId === foundBook.uploaderId ? <hr className='my-1'></hr> : ''}
+                        {userId === foundBook.uploaderId ? <Col> {foundBook.edit === false ? <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditdelete('edit', foundBook._id, myJwt)}>edit</button> : <button className='border rounded py-0 w-50 m-1 btnAny' onClick={() => handleEditDone({ foundBookId: foundBook._id, name, title, descr, pageNumbers, genre, myJwt })}>done</button>}</Col> : ''}
                     </div>
                     : ''}
             </Col>

@@ -12,13 +12,14 @@ const MyUploads = ({ handleEditDone, handleEditdelete, handleAddBook }) => {
     const { userName } = useParams()
     let [userUploads, setUploads] = useState('')
     let [name, handleName, title, handleTitle, descr, handleDesc, pageNumbers, handlePageNumber, genre, handleGenre, boo, handleBoo] = useMultiple('');
-    let userToken = useSelector(state => state.accessToken)
+    let myJwt = localStorage.getItem('accessToken')
+
     useEffect(() => {
         const checkUserUploads = async () => {
             try {
                 let response = await axios.get(`http://localhost:8600/user/fetchuserUploads/`, {
                     headers: {
-                        'Authorization': `Bearer ${userToken}`
+                        'Authorization': `Bearer ${myJwt}`
                     }
                 })
                 let { myUploads } = response.data
@@ -32,7 +33,7 @@ const MyUploads = ({ handleEditDone, handleEditdelete, handleAddBook }) => {
 
     const handleUpload = () => {
         if (name !== '' && title !== '' && pageNumbers !== '' && descr !== '' && genre !== '') {
-            handleAddBook({ name, title, pageNumbers, descr, genre, edit: false, userToken })
+            handleAddBook({ name, title, pageNumbers, descr, genre, edit: false, myJwt })
             handleTitle('')
             handleName('')
             handlePageNumber('')
@@ -91,7 +92,7 @@ const MyUploads = ({ handleEditDone, handleEditdelete, handleAddBook }) => {
                         <hr className='my-0'></hr>
                         <Col className='p-1'>Description - <span>{a.edit === false ? a.descr : <input className='border rounded text-center' placeholder='description' onInput={(event) => handleDesc(event.target.value)} />}</span></Col>
                         <hr className='my-0'></hr>
-                        <Col className='text-center m-1'>{a.edit === false ? <button className='border rounded me-1 py-0 btnAny' onClick={() => handleEditdelete('edit', a._id, userToken)}>Edit</button> : <button className='border rounded me-1 py-0 btnAny' onClick={() => handleEditDone({ foundBookId: a._id, name, title, descr, pageNumbers, genre })}> Done</button>}<button className='border rounded mx-1 py-0 btnAny' onClick={() => handleEditdelete('del', a._id)}>Delete</button></Col>
+                        <Col className='text-center m-1'>{a.edit === false ? <button className='border rounded me-1 py-0 btnAny' onClick={() => handleEditdelete('edit', a._id, myJwt)}>Edit</button> : <button className='border rounded me-1 py-0 btnAny' onClick={() => handleEditDone({ foundBookId: a._id, name, title, descr, pageNumbers, genre, myJwt })}> Done</button>}<button className='border rounded mx-1 py-0 btnAny' onClick={() => handleEditdelete('del', a._id)}>Delete</button></Col>
                     </Col>)
                 :
                 <Col lg={4} md={4} sm={12} xs={12} className='bg-white border rounded p-1 text-center m-1 bg-white'> User Added No Books Yet</Col>

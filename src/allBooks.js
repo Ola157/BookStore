@@ -11,14 +11,17 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import useMultiple from './custom-hooks/useMultiple';
 import { useSelector } from 'react-redux';
 
-const AllBooks = ({ handleSearch, handleLogout }) => {
+const AllBooks = ({ handleSearch, handleLogout, handleEditdelete, handleResponse }) => {
     const navigate = useNavigate()
     const { userName } = useParams()
     let [bookName, setName] = useState('')
     let awesome = <FontAwesomeIcon className='text-white' icon={faUser} />
     let [boo, handleBoo] = useMultiple()
-    let [searchValue, setValue] = useState('')
     let searchedBook = useSelector(state => state.searchedBook)
+    let userId = useSelector(state => state.id)
+    let myJwt = localStorage.getItem('accessToken')
+    let editResponse = useSelector(state => state.editResponse)
+    let bookIdent = useSelector(state => state.bookId)
 
     useEffect(() => {
         const getAllbooks = async () => {
@@ -31,6 +34,13 @@ const AllBooks = ({ handleSearch, handleLogout }) => {
         }
         getAllbooks();
     }, [boo, []])
+
+    useEffect(() => {
+        if (editResponse == 'granted') {
+            navigate(`/viewmore/${bookIdent}/${userName}`)
+        }
+
+    }, [editResponse])
 
     const handleViewmore = async (bookId) => {
         navigate(`/viewmore/${bookId}/${userName}`)
@@ -74,6 +84,7 @@ const AllBooks = ({ handleSearch, handleLogout }) => {
                     <Col className='m-1'>Author: {searchedBook.name}</Col>
                     <hr className='my-0'></hr>
                     <Col className='py-0 m-2'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleViewmore(searchedBook._id)}>view more</button></Col>
+                    {userId === searchedBook.uploaderId ? <Col className='py-0 m-1'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleEditdelete('edit', searchedBook._id, myJwt)}>Edit</button></Col> : ''}
                 </Col> :
                 bookName ?
                     bookName.map((book, i) => <Col lg={2} md={3} sm={3} xs={12} key={i} className='p-1 py-3 text-center m-1 bookIcon h-100'>
@@ -82,6 +93,7 @@ const AllBooks = ({ handleSearch, handleLogout }) => {
                         <Col className='m-1'>Author: {book.name}</Col>
                         <hr className='my-0'></hr>
                         <Col className='py-0 m-2'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleViewmore(book._id)}>view more</button></Col>
+                        {userId === book.uploaderId ? <Col className='py-0 m-1'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleEditdelete('edit', book._id, myJwt)}>Edit</button></Col> : ''}
                     </Col>
                     ) : ''
             }

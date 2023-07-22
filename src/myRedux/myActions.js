@@ -4,7 +4,7 @@ export const handleDone = (value) => {
     return async (dispatch) => {
         dispatch({ type: 'EDIT_DONE', payload: value });
 
-        let { foundBookId, name, title, descr, pageNumbers, genre } = value
+        let { foundBookId, name, title, descr, pageNumbers, genre, myJwt } = value
         if (name !== '' && title !== '' && descr !== '' && pageNumbers !== '' && genre !== '') {
 
             try {
@@ -19,12 +19,25 @@ export const handleDone = (value) => {
                 console.error(err)
             }
         }
-        else { alert('inputs cants be blank') }
+
+        else if (name == '' && title == '' && descr == '' && pageNumbers == '' && genre == '') {
+
+            try {
+                let response = await axios.patch(`http://localhost:8600/store/edit/${foundBookId}`, null, {
+                    headers: {
+                        'Authorization': `Bearer ${myJwt}`,
+                    }
+                })
+            }
+            catch (err) {
+                console.error(err)
+            }
+        }
     }
 }
 
 export const handleEdit = (any, id, myJwt) => {
-    return async () => {
+    return async (dispatch) => {
         switch (any) {
             case 'edit':
                 try {
@@ -33,7 +46,8 @@ export const handleEdit = (any, id, myJwt) => {
                             'Authorization': `Bearer ${myJwt}`,
                         }
                     })
-                    alert(response.data)
+                    dispatch({ type: 'EDIT_RESPONSE', payload: { editResponse: response.data, bookId: id } })
+                    if (response.data !== 'granted') return alert(response.data)
                 }
                 catch (err) {
                     console.error(err)
@@ -66,8 +80,9 @@ export const handleSignupLogin = (value) => {
                             }
                         })
                     if (response.data === "") return alert('Incorrect Details')
-                    let { accessToken, username } = response.data
-                    dispatch({ type: "LOGIN", payload: { accessToken, username } })
+                    let { accessToken, username, id } = response.data
+                    localStorage.setItem('accessToken', accessToken)
+                    dispatch({ type: "LOGIN", payload: { username, id } })
                 }
                 catch (err) { console.error(err) }
                 break;
@@ -80,9 +95,9 @@ export const handleSignupLogin = (value) => {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             }
                         })
-                    let { accessToken, username } = response.data
-                    console.log(response.data)
-                    dispatch({ type: "LOGIN", payload: { accessToken, username } })
+                    let { accessToken, username, id } = response.data
+                    localStorage.setItem('accessToken', accessToken)
+                    dispatch({ type: "LOGIN", payload: { username, id } })
                 }
 
                 catch (error) {
@@ -97,6 +112,7 @@ export const handleSignupLogin = (value) => {
 
 export const handleSignOut = () => {
     return (dispatch) => {
+        localStorage.removeItem('accessToken')
         dispatch({ type: "SIGN_OUT" })
 
     }
@@ -121,7 +137,6 @@ export const handleBookAdd = (value) => {
 }
 
 export const handleAllSearch = (bookName) => {
-
     return async (dispatch) => {
         try {
             const response = await axios.post("http://localhost:8600/store/searchBook", { bookName },
@@ -134,5 +149,11 @@ export const handleAllSearch = (bookName) => {
             dispatch({ type: "BOOK_SEARCH", payload: { searchedBook } })
         }
         catch (err) { console.log(err) }
+    }
+}
+
+export const handleResponseDelete = () => {
+    return (dispatch) => {
+        dispatch({ type: 'REMOVE_RESPONSE' })
     }
 }
