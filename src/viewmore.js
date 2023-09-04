@@ -20,7 +20,7 @@ const ViewMore = ({ handleEditdelete, handleEditDone, handleResponse }) => {
     useEffect(() => {
         const findBookId = async () => {
             try {
-                let response = await axios.get(`http://localhost:8600/store/viewmore/${bookId}`, {})
+                let response = await axios.get(`https://book-store-back-end-three.vercel.app/store/viewmore/${bookId}`, {})
                 let { finder } = response.data
                 setFound(finder)
             }
@@ -36,7 +36,7 @@ const ViewMore = ({ handleEditdelete, handleEditDone, handleResponse }) => {
         const findUploader = async () => {
             if (foundBook) {
                 try {
-                    let response = await axios.get(`http://localhost:8600/user/uploader/${foundBook.uploaderId}`, {})
+                    let response = await axios.get(`https://book-store-back-end-three.vercel.app/user/uploader/${foundBook.uploaderId}`, {})
                     setUploader(response.data)
                 }
                 catch (err) {

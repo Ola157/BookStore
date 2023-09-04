@@ -26,7 +26,7 @@ const AllBooks = ({ handleSearch, handleLogout, handleEditdelete, handleResponse
     useEffect(() => {
         const getAllbooks = async () => {
             try {
-                let response = await axios.get("http://localhost:8600/store/allbooks", {})
+                let response = await axios.get("https://book-store-back-end-three.vercel.app/store/allbooks", {})
                 let { allbooks } = response.data
                 setName(allbooks)
             }

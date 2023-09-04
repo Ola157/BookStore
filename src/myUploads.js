@@ -17,7 +17,7 @@ const MyUploads = ({ handleEditDone, handleEditdelete, handleAddBook }) => {
     useEffect(() => {
         const checkUserUploads = async () => {
             try {
-                let response = await axios.get(`http://localhost:8600/user/fetchuserUploads/`, {
+                let response = await axios.get(`https://book-store-back-end-three.vercel.app/user/fetchuserUploads/`, {
                     headers: {
                         'Authorization': `Bearer ${myJwt}`
                     }
