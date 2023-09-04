@@ -8,7 +8,7 @@ export const handleDone = (value) => {
         if (name !== '' && title !== '' && descr !== '' && pageNumbers !== '' && genre !== '') {
 
             try {
-                let response = await axios.patch(`http://localhost:8600/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
+                let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     }
@@ -23,7 +23,7 @@ export const handleDone = (value) => {
         else if (name == '' && title == '' && descr == '' && pageNumbers == '' && genre == '') {
 
             try {
-                let response = await axios.patch(`http://localhost:8600/store/edit/${foundBookId}`, null, {
+                let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${foundBookId}`, null, {
                     headers: {
                         'Authorization': `Bearer ${myJwt}`,
                     }
@@ -41,7 +41,7 @@ export const handleEdit = (any, id, myJwt) => {
         switch (any) {
             case 'edit':
                 try {
-                    let response = await axios.patch(`http://localhost:8600/store/edit/${id}`, null, {
+                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${id}`, null, {
                         headers: {
                             'Authorization': `Bearer ${myJwt}`,
                         }
@@ -55,7 +55,7 @@ export const handleEdit = (any, id, myJwt) => {
                 break;
             case 'del':
                 try {
-                    let response = await axios.delete(`http://localhost:8600/store/delete/${id}`)
+                    let response = await axios.delete(`https://book-store-back-end-three.vercel.app/store/delete/${id}`)
                 }
                 catch (err) {
                     console.error(err)
@@ -73,7 +73,7 @@ export const handleSignupLogin = (value) => {
         switch (any) {
             case 'login':
                 try {
-                    const response = await axios.post("http://localhost:8600/user/login", { username: userName, password },
+                    const response = await axios.post("https://book-store-back-end-three.vercel.app/user/login", { username: userName, password },
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,7 +89,7 @@ export const handleSignupLogin = (value) => {
 
             case 'signup':
                 try {
-                    const response = await axios.post("http://localhost:8600/user/register", { username: userName, password },
+                    const response = await axios.post("https://book-store-back-end-three.vercel.app/user/register", { username: userName, password },
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -122,7 +122,7 @@ export const handleBookAdd = (value) => {
     return async () => {
         let { name, title, pageNumbers, descr, genre, edit, userToken } = value
         try {
-            const response = await axios.post("http://localhost:8600/store/addbook", { name, title, pageNumbers, descr, genre, edit, userToken },
+            const response = await axios.post("https://book-store-back-end-three.vercel.app/store/addbook", { name, title, pageNumbers, descr, genre, edit, userToken },
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -139,7 +139,7 @@ export const handleBookAdd = (value) => {
 export const handleAllSearch = (bookName) => {
     return async (dispatch) => {
         try {
-            const response = await axios.post("http://localhost:8600/store/searchBook", { bookName },
+            const response = await axios.post("https://book-store-back-end-three.vercel.app/store/searchBook", { bookName },
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

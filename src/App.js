@@ -11,7 +11,6 @@ import { handleAllSearch, handleBookAdd, handleDone, handleEdit, handleSignOut, 
 
 function App() {
   let userLogin = useSelector(state => state.username)
-  let timeoutId;
   let dispatch = useDispatch();
   const navigate = useNavigate();
 
