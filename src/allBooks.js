@@ -28,8 +28,9 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges, handleSearched
             }
             handleSearched()
             getAllbooks();
+            return
         }
-        else { navigate('/') }
+        else { return navigate('/') }
     }, [isLogin])
 
 

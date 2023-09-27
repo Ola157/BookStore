@@ -27,9 +27,9 @@ const MyUploads = ({ handleAllChanges, handleAddBook, handleAllUserUploads, hand
 
     useEffect(() => {
         if (isLogin) {
-            handleAllUserUploads();
+            return handleAllUserUploads();
         }
-        else { navigate('/') }
+        else { return navigate('/') }
     }, [myUploads, isLogin])
 
     const handleUpload = () => {
