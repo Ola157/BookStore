@@ -91,14 +91,10 @@ button:hover {
     font-size: 1.2rem;
 }
 
-/* Container */
 .page-container {
     background-color: rgba(93, 76, 66, 0.1);
     font-family: 'Arial', sans-serif;
 }
-
-/* Navbar */
-
 
 .menu {
     display: flex;
@@ -111,7 +107,6 @@ button:hover {
     color: #FFF;
 }
 
-/* Search Row */
 .search-row {
     margin-top: 20px;
 }
@@ -180,7 +175,6 @@ button:focus {
 
 .custom-navbar .navbar-toggler-icon {
     filter: invert(1);
-    /* Make the toggler icon visible on the dark background */
 }
 
 .navbar-icon {
