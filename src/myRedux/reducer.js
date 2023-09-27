@@ -1,16 +1,29 @@
-let allState = ''
+let allState = {
+    isRegister: false,
+    isLogin: false,
+    myUploads: []
+}
 const myReducer = (state = allState, action) => {
     switch (action.type) {
         case "LOGIN":
+            let { username, id } = action.payload
             return {
                 ...state,
-                id: action.payload.id,
-                username: action.payload.username
+                isLogin: true,
+                username,
+                userId: id
             }
+        case "REGISTER":
+            return {
+                ...state,
+                isRegister: true
+            }
+
         case "SIGN_OUT":
             return {
                 ...state,
-                id: '',
+                isLogin: false,
+                userId: '',
                 username: ''
             }
         case "BOOK_SEARCH":
@@ -19,18 +32,12 @@ const myReducer = (state = allState, action) => {
                 ...state,
                 searchedBook
             }
-        case "EDIT_RESPONSE":
-            let { editResponse, bookId } = action.payload
+
+        case "MY_UPLOADS":
+            let { myUploads } = action.payload
             return {
                 ...state,
-                editResponse,
-                bookId
-            }
-        case "REMOVE_RESPONSE":
-            return {
-                ...state,
-                editResponse: '',
-                bookId: ''
+                myUploads
             }
     }
     return state

@@ -1,103 +1,112 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Col, Container, Row, Table, Navbar } from 'react-bootstrap';
+import { Col, Container, Row, Navbar } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookOpenReader } from '@fortawesome/free-solid-svg-icons';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import useMultiple from './custom-hooks/useMultiple';
+import { GiBookmarklet } from 'react-icons/gi';
 import { useSelector } from 'react-redux';
 
-const AllBooks = ({ handleSearch, handleLogout, handleEditdelete, handleResponse }) => {
+const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
     const navigate = useNavigate()
     const { userName } = useParams()
-    let [bookName, setName] = useState('')
-    let awesome = <FontAwesomeIcon className='text-white' icon={faUser} />
-    let [boo, handleBoo] = useMultiple()
+    let [allbooks, setBooks] = useState('')
     let searchedBook = useSelector(state => state.searchedBook)
-    let userId = useSelector(state => state.id)
-    let myJwt = localStorage.getItem('accessToken')
-    let editResponse = useSelector(state => state.editResponse)
-    let bookIdent = useSelector(state => state.bookId)
+    let userId = useSelector(state => state.userId)
+    let isLogin = useSelector(state => state.isLogin)
 
     useEffect(() => {
-        const getAllbooks = async () => {
-            try {
-                let response = await axios.get("https://book-store-back-end-three.vercel.app/store/allbooks", {})
-                let { allbooks } = response.data
-                setName(allbooks)
+        if (isLogin) {
+            const getAllbooks = async () => {
+                try {
+                    let response = await axios.get("https://book-store-back-end-three.vercel.app/store/allbooks", {})
+                    let { allbooks } = response.data
+                    setBooks(allbooks)
+                }
+                catch (err) { console.error(err) }
             }
-            catch (err) { console.error(err) }
+            getAllbooks();
         }
-        getAllbooks();
-    }, [boo, []])
+        else { navigate('/') }
+    }, [])
 
-    useEffect(() => {
-        if (editResponse == 'granted') {
-            navigate(`/viewmore/${bookIdent}/${userName}`)
-        }
 
-    }, [editResponse])
-
-    const handleViewmore = async (bookId) => {
-        navigate(`/viewmore/${bookId}/${userName}`)
+    const handleChanges = (bookId) => {
+        handleAllChanges('edit', bookId)
+        navigate(`/myUploads/${userName}`)
     }
 
-
-    return (<Container fluid className='indisplay pb-5'>
-        <Navbar expand="lg" className='bg-black mb-2 icon'>
-            <Container>
-                <div>
-                    <FontAwesomeIcon className='text-white' icon={faBookOpenReader} size="lg" />
-                </div>
-
-                <div className='d-xs-none'>
-                    <Nav className="me-auto">
-                        <NavDropdown title={awesome} id="basic-nav-dropdown" className='bg-black '>
-                            <NavDropdown.Item >{userName}</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => navigate(`/myUploads/${userName}`)} >
-                                My Uploads
-                            </NavDropdown.Item>
+    return (
+        <Container fluid className='page-container'>
+            <Navbar expand="lg" className='custom-navbar px-4'>
+                <Navbar.Brand href="#">
+                    <GiBookmarklet className='bookBrand' />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ml-auto">
+                        <NavDropdown id="user-dropdown">
+                            <NavDropdown.Header>{userName}</NavDropdown.Header>
+                            <NavDropdown.Item onClick={() => navigate(`/myUploads/${userName}`)}>My Uploads</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item onClick={() => handleLogout()} >
-                                logout
-                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                </div>
+                </Navbar.Collapse>
+            </Navbar>
 
-            </Container>
-        </Navbar>
-        <Row className='d-flex justify-content-evenly'>
-            <Col lg={12} md={12} sm={12} xs={12}>
-                <input className='border rounded text-center w-100' placeholder='seach by title' onInput={(event) => handleSearch(event.target.value)} />
-            </Col>
-        </Row>
-        <Row className='d-flex justify-content-evenly m-1 '>
-            {searchedBook ?
-                <Col lg={2} md={3} sm={3} xs={12} className='p-1 py-3 text-center m-1 bookIcon h-100'>
-                    <Col className='m-1'>{searchedBook.title}</Col>
-                    <hr className='my-0'></hr>
-                    <Col className='m-1'>Author: {searchedBook.name}</Col>
-                    <hr className='my-0'></hr>
-                    <Col className='py-0 m-2'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleViewmore(searchedBook._id)}>view more</button></Col>
-                    {userId === searchedBook.uploaderId ? <Col className='py-0 m-1'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleEditdelete('edit', searchedBook._id, myJwt)}>Edit</button></Col> : ''}
-                </Col> :
-                bookName ?
-                    bookName.map((book, i) => <Col lg={2} md={3} sm={3} xs={12} key={i} className='p-1 py-3 text-center m-1 bookIcon h-100'>
-                        <Col className='m-1'>{book.title}</Col>
+            <Row className='search-row'>
+                <Col className='search-col'>
+                    <input className='search-input' type="text" placeholder='Search by title' onInput={(e) => handleSearch(e.target.value)} />
+                </Col>
+            </Row>
+
+            <Row className='books-row my-5'>
+                {searchedBook &&
+                    <Col lg={2} md={3} sm={3} xs={10} className='p-1 py-3 text-center m-1 book-col h-100'>
+                        <Col className='m-1'>{searchedBook.title}</Col>
                         <hr className='my-0'></hr>
-                        <Col className='m-1'>Author: {book.name}</Col>
+                        <Col className='m-1'>Author: {searchedBook.authorName}</Col>
                         <hr className='my-0'></hr>
-                        <Col className='py-0 m-2'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleViewmore(book._id)}>view more</button></Col>
-                        {userId === book.uploaderId ? <Col className='py-0 m-1'><button className='border rounded py-0 my-1 btnAny' onClick={() => handleEditdelete('edit', book._id, myJwt)}>Edit</button></Col> : ''}
+                        <Col className='py-0 m-2'>
+                            <button className='border rounded py-0 my-1 btnAny'
+                                onClick={() => navigate(`/viewmore/${searchedBook._id}/${userName}`)
+                                }>view more</button>
+                        </Col>
+                        {userId === searchedBook.uploaderId &&
+                            <Col className='py-0 m-1'>
+                                <button className='border rounded py-0 my-1 btnAny'
+                                    onClick={() => handleChanges(searchedBook._id)}>Edit</button>
+                            </Col>}
+                    </Col>}
+                {allbooks && !searchedBook &&
+                    allbooks.map((book, i) => <Col lg={2} md={3} sm={5} xs={10} key={i} className='p-1 py-3 text-center m-1 book-col h-100'>
+                        <Col className='m-1'>{book.bookTitle}</Col>
+                        <hr className='my-0'></hr>
+                        <Col className='m-1'>Author: {book.authorName}</Col>
+                        <hr className='my-0'></hr>
+                        <Col className='py-0 m-2'>
+                            <button className='border rounded py-0 my-1'
+                                onClick={() => navigate(`/viewmore/${book._id}/${userName}`)
+                                }>view more</button>
+                        </Col>
+                        {userId === book.uploaderId &&
+                            <Col className='py-0 m-2'>
+                                <button className='btn-edit'
+                                    onClick={() => handleChanges(book._id)}>Edit</button>
+                            </Col>}
+                    </Col>)}
+            </Row>
+
+            <Container fluid className='footer-container'>
+                <Row>
+                    <Col className="text-center">
+                        <p>&copy; {new Date().getFullYear()} BookLovers' Haven. All rights reserved.</p>
                     </Col>
-                    ) : ''
-            }
-        </Row>
-    </Container >)
+                </Row>
+            </Container>
+        </Container>
+    )
 }
 export default AllBooks;

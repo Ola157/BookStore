@@ -1,62 +1,66 @@
 import axios from "axios"
 
-export const handleDone = (value) => {
+export const handleChanges = (type, bookId, data) => {
+
     return async (dispatch) => {
-        dispatch({ type: 'EDIT_DONE', payload: value });
-
-        let { foundBookId, name, title, descr, pageNumbers, genre, myJwt } = value
-        if (name !== '' && title !== '' && descr !== '' && pageNumbers !== '' && genre !== '') {
-
-            try {
-                let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/editdone/${foundBookId}`, { name, title, pageNumbers, descr, genre, edit: false }, {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                })
-                alert(response.data)
-            }
-            catch (err) {
-                console.error(err)
-            }
-        }
-
-        else if (name == '' && title == '' && descr == '' && pageNumbers == '' && genre == '') {
-
-            try {
-                let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${foundBookId}`, null, {
-                    headers: {
-                        'Authorization': `Bearer ${myJwt}`,
-                    }
-                })
-            }
-            catch (err) {
-                console.error(err)
-            }
-        }
-    }
-}
-
-export const handleEdit = (any, id, myJwt) => {
-    return async (dispatch) => {
-        switch (any) {
+        let myJwt = localStorage.getItem('accessToken')
+        switch (type) {
             case 'edit':
                 try {
-                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${id}`, null, {
+                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${bookId}`, null, {
                         headers: {
                             'Authorization': `Bearer ${myJwt}`,
                         }
                     })
-                    dispatch({ type: 'EDIT_RESPONSE', payload: { editResponse: response.data, bookId: id } })
-                    if (response.data !== 'granted') return alert(response.data)
+                    let { myUploads } = response.data
+                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
                 }
                 catch (err) {
                     console.error(err)
                 }
                 break;
-            case 'del':
+            case 'delete':
                 try {
-                    let response = await axios.delete(`https://book-store-back-end-three.vercel.app/store/delete/${id}`)
+                    let response = await axios.delete(`https://book-store-back-end-three.vercel.app/store/delete/${bookId}`,
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${myJwt}`
+                            }
+                        })
+                    let { myUploads } = response.data
+                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
                 }
+                catch (err) {
+                    console.error(err)
+                }
+                break;
+            case 'save':
+                try {
+                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/save/${bookId}`, { data }, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Authorization': `Bearer ${myJwt}`
+                        }
+                    })
+                    let { myUploads } = response.data
+                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
+                }
+
+                catch (err) {
+                    console.error(err)
+                }
+                break;
+            case 'cancel':
+                try {
+                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/cancel/${bookId}`, null, {
+                        headers: {
+                            'Authorization': `Bearer ${myJwt}`,
+                        }
+                    })
+                    let { myUploads } = response.data
+                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
+                }
+
                 catch (err) {
                     console.error(err)
                 }
@@ -66,8 +70,8 @@ export const handleEdit = (any, id, myJwt) => {
     }
 }
 
-export const handleSignupLogin = (value) => {
-    let { any, userName, password } = value
+export const handleSignupLogin = (data) => {
+    let { any, userName, password } = data
 
     return async (dispatch) => {
         switch (any) {
@@ -79,7 +83,7 @@ export const handleSignupLogin = (value) => {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             }
                         })
-                    if (response.data === "") return alert('Incorrect Details')
+                    if (!response.data) return alert('Incorrect Details')
                     let { accessToken, username, id } = response.data
                     localStorage.setItem('accessToken', accessToken)
                     dispatch({ type: "LOGIN", payload: { username, id } })
@@ -95,9 +99,10 @@ export const handleSignupLogin = (value) => {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             }
                         })
-                    let { accessToken, username, id } = response.data
-                    localStorage.setItem('accessToken', accessToken)
-                    dispatch({ type: "LOGIN", payload: { username, id } })
+
+                    if (response.data === 'registered') {
+                        dispatch({ type: "REGISTER" })
+                    }
                 }
 
                 catch (error) {
@@ -114,20 +119,23 @@ export const handleSignOut = () => {
     return (dispatch) => {
         localStorage.removeItem('accessToken')
         dispatch({ type: "SIGN_OUT" })
-
     }
 }
 
-export const handleBookAdd = (value) => {
-    return async () => {
-        let { name, title, pageNumbers, descr, genre, edit, userToken } = value
+export const handleBookAdd = (data) => {
+    return async (dispatch) => {
+        let { authorName, bookTitle, bookpages, bookGenre, bookDescr, editBook } = data
+        let myJwt = localStorage.getItem('accessToken')
         try {
-            const response = await axios.post("https://book-store-back-end-three.vercel.app/store/addbook", { name, title, pageNumbers, descr, genre, edit, userToken },
+            const response = await axios.post("https://book-store-back-end-three.vercel.app/store/addbook", { authorName, bookTitle, bookpages, bookGenre, bookDescr, editBook },
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${myJwt}`
                     }
                 })
+            let { myUploads } = response.data
+            dispatch({ type: "MY_UPLOADS", payload: { myUploads } })
 
         }
         catch (err) {
@@ -136,10 +144,26 @@ export const handleBookAdd = (value) => {
     }
 }
 
-export const handleAllSearch = (bookName) => {
+export const handleUserUploads = () => async (dispatch) => {
+    let myJwt = localStorage.getItem('accessToken')
+    try {
+        let response = await axios.get(`https://book-store-back-end-three.vercel.app/user/fetchuserUploads/`, {
+            headers: {
+                'Authorization': `Bearer ${myJwt}`
+            }
+        })
+        let { myUploads } = response.data
+        if (myUploads) {
+            dispatch({ type: "MY_UPLOADS", payload: { myUploads } })
+        }
+    }
+    catch (err) { console.error(err) }
+}
+
+export const handleAllSearch = (bookTitle) => {
     return async (dispatch) => {
         try {
-            const response = await axios.post("https://book-store-back-end-three.vercel.app/store/searchBook", { bookName },
+            const response = await axios.get(`https://book-store-back-end-three.vercel.app/store/searchBook/${bookTitle}`,
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,11 +173,5 @@ export const handleAllSearch = (bookName) => {
             dispatch({ type: "BOOK_SEARCH", payload: { searchedBook } })
         }
         catch (err) { console.log(err) }
-    }
-}
-
-export const handleResponseDelete = () => {
-    return (dispatch) => {
-        dispatch({ type: 'REMOVE_RESPONSE' })
     }
 }
