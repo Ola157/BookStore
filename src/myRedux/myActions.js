@@ -175,3 +175,7 @@ export const handleAllSearch = (bookTitle) => {
         catch (err) { console.log(err) }
     }
 }
+
+export const handleSearchedBook = () => (dispatch) => {
+    dispatch({ type: 'CLEAR_SEARCHED' })
+}

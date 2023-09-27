@@ -32,6 +32,11 @@ const myReducer = (state = allState, action) => {
                 ...state,
                 searchedBook
             }
+        case "CLEAR_SEARCHED":
+            return {
+                ...state,
+                searchedBook: ''
+            }
 
         case "MY_UPLOADS":
             let { myUploads } = action.payload

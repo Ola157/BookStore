@@ -30,7 +30,7 @@ const MyUploads = ({ handleAllChanges, handleAddBook, handleAllUserUploads, hand
             handleAllUserUploads();
         }
         else { navigate('/') }
-    }, [myUploads])
+    }, [myUploads, isLogin])
 
     const handleUpload = () => {
         if (authorName !== '' && bookTitle !== '' && bookpages !== '' && bookDescr !== '' && bookGenre !== '') {

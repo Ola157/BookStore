@@ -8,7 +8,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { GiBookmarklet } from 'react-icons/gi';
 import { useSelector } from 'react-redux';
 
-const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
+const AllBooks = ({ handleSearch, handleLogout, handleAllChanges, handleSearched }) => {
     const navigate = useNavigate()
     const { userName } = useParams()
     let [allbooks, setBooks] = useState('')
@@ -26,10 +26,11 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
                 }
                 catch (err) { console.error(err) }
             }
+            handleSearched()
             getAllbooks();
         }
         else { navigate('/') }
-    }, [])
+    }, [isLogin])
 
 
     const handleChanges = (bookId) => {
@@ -63,23 +64,7 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
             </Row>
 
             <Row className='books-row my-5'>
-                {searchedBook &&
-                    <Col lg={2} md={3} sm={3} xs={10} className='p-1 py-3 text-center m-1 book-col h-100'>
-                        <Col className='m-1'>{searchedBook.bookTitle}</Col>
-                        <hr className='my-0'></hr>
-                        <Col className='m-1'>Author: {searchedBook.authorName}</Col>
-                        <hr className='my-0'></hr>
-                        <Col className='py-0 m-2'>
-                            <button className='border rounded py-0 my-1 btnAny'
-                                onClick={() => navigate(`/viewmore/${searchedBook._id}/${userName}`)
-                                }>view more</button>
-                        </Col>
-                        {userId === searchedBook.uploaderId &&
-                            <Col className='py-0 m-1'>
-                                <button className='border rounded py-0 my-1 btnAny'
-                                    onClick={() => handleChanges(searchedBook._id)}>Edit</button>
-                            </Col>}
-                    </Col>}
+
                 {allbooks && !searchedBook &&
                     allbooks.map((book, i) => <Col lg={2} md={3} sm={5} xs={10} key={i} className='p-1 py-3 text-center m-1 book-col h-100'>
                         <Col className='m-1'>{book.bookTitle}</Col>
@@ -97,6 +82,23 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
                                     onClick={() => handleChanges(book._id)}>Edit</button>
                             </Col>}
                     </Col>)}
+                {searchedBook &&
+                    <Col lg={2} md={3} sm={3} xs={10} className='p-1 py-3 text-center m-1 book-col h-100'>
+                        <Col className='m-1'>{searchedBook.bookTitle}</Col>
+                        <hr className='my-0'></hr>
+                        <Col className='m-1'>Author: {searchedBook.authorName}</Col>
+                        <hr className='my-0'></hr>
+                        <Col className='py-0 m-2'>
+                            <button className='border rounded py-0 my-1 btnAny'
+                                onClick={() => navigate(`/viewmore/${searchedBook._id}/${userName}`)
+                                }>view more</button>
+                        </Col>
+                        {userId === searchedBook.uploaderId &&
+                            <Col className='py-0 m-1'>
+                                <button className='border rounded py-0 my-1 btnAny'
+                                    onClick={() => handleChanges(searchedBook._id)}>Edit</button>
+                            </Col>}
+                    </Col>}
             </Row>
 
             <Container fluid className='footer-container'>
