@@ -65,7 +65,7 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges }) => {
             <Row className='books-row my-5'>
                 {searchedBook &&
                     <Col lg={2} md={3} sm={3} xs={10} className='p-1 py-3 text-center m-1 book-col h-100'>
-                        <Col className='m-1'>{searchedBook.title}</Col>
+                        <Col className='m-1'>{searchedBook.bookTitle}</Col>
                         <hr className='my-0'></hr>
                         <Col className='m-1'>Author: {searchedBook.authorName}</Col>
                         <hr className='my-0'></hr>
