@@ -1,6 +1,5 @@
 let allState = {
     isRegister: false,
-    isLogin: false,
     myUploads: []
 }
 const myReducer = (state = allState, action) => {
@@ -9,7 +8,6 @@ const myReducer = (state = allState, action) => {
             let { username, id } = action.payload
             return {
                 ...state,
-                isLogin: true,
                 username,
                 userId: id
             }

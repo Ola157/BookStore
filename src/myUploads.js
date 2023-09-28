@@ -23,14 +23,12 @@ const MyUploads = ({ handleAllChanges, handleAddBook, handleAllUserUploads, hand
     let [newBookpages, handleNewBookPages] = useState('')
     let [newBookGenre, handleNewBookGenre] = useState('')
     let editBook = false
-    let isLogin = useSelector(state => state.isLogin)
+    let userId = useSelector(state => state.userId)
 
     useEffect(() => {
-        if (isLogin) {
-            return handleAllUserUploads();
-        }
-        else { return navigate('/') }
-    }, [myUploads, isLogin])
+        if (userId) return handleAllUserUploads();
+        if (!userId) return navigate('/')
+    }, [myUploads])
 
     const handleUpload = () => {
         if (authorName !== '' && bookTitle !== '' && bookpages !== '' && bookDescr !== '' && bookGenre !== '') {

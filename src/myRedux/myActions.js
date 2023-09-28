@@ -83,7 +83,6 @@ export const handleSignupLogin = (data) => {
                                 'Content-Type': 'application/x-www-form-urlencoded',
                             }
                         })
-                    if (!response.data) return alert('Incorrect Details')
                     let { accessToken, username, id } = response.data
                     localStorage.setItem('accessToken', accessToken)
                     dispatch({ type: "LOGIN", payload: { username, id } })
