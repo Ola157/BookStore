@@ -57,32 +57,31 @@ const ViewMore = () => {
                 </Col>
                 <hr className='divider'></hr>
                 {foundBook &&
-                    <div>
-                        <Col className='book-detail-row'>
+                    <Col lg={8} md={9} sm={10} xs={10}>
+                        <div className='book-detail-row'>
                             <span className='tag'>Author</span><span className='book-detail-value'>{foundBook.authorName}</span>
-                        </Col>
+                        </div>
                         <hr className='divider'></hr>
-                        <Col className='book-detail-row'>
+                        <div className='book-detail-row'>
                             <span className='tag'>Title</span><span className='book-detail-value'>{foundBook.bookTitle}</span>
-                        </Col>
+                        </div>
                         <hr className='divider'></hr>
-                        <Col className='book-detail-row'>
+                        <div className='book-detail-row'>
                             <span className='tag'>Description</span><span className='book-detail-value'>{foundBook.bookDescr}</span>
-                        </Col>
+                        </div>
                         <hr className='divider'></hr>
-                        <Col className='book-detail-row'>
+                        <div className='book-detail-row'>
                             <span className='tag'>Pages</span><span className='book-detail-value'>{foundBook.bookpages}</span>
-                        </Col>
+                        </div>
                         <hr className='divider'></hr>
-                        <Col className='book-detail-row'>
+                        <div className='book-detail-row'>
                             <span className='tag'>Genre</span><span className='book-detail-value'>{foundBook.bookGenre}</span>
-                        </Col>
+                        </div>
                         <hr className='divider'></hr>
-                        <Col className='book-detail-row'>
+                        <div className='book-detail-row'>
                             <span className='tag'>Added by</span>  <span className='book-detail-value' style={{ fontStyle: 'italic' }}>{foundBook.username}</span>
-                        </Col>
-                    </div>
-                }
+                        </div>
+                    </Col>}
             </Col>
         </Row>
 
