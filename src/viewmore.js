@@ -50,14 +50,14 @@ const ViewMore = () => {
             </Col>
         </Row>
         <Row className='book-details-container'>
-            <Col className='book-details-card' lg={4}>
+            <Col className='book-details-card' lg={6} md={9} sm={10} xs={10}>
 
                 <Col className='book-details-title'>
                     Book Details
                 </Col>
                 <hr className='divider'></hr>
                 {foundBook &&
-                    <Col lg={8} md={9} sm={10} xs={10}>
+                    <Col >
                         <div className='book-detail-row'>
                             <span className='tag'>Author</span><span className='book-detail-value'>{foundBook.authorName}</span>
                         </div>
