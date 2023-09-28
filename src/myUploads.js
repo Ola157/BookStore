@@ -23,11 +23,11 @@ const MyUploads = ({ handleAllChanges, handleAddBook, handleAllUserUploads, hand
     let [newBookpages, handleNewBookPages] = useState('')
     let [newBookGenre, handleNewBookGenre] = useState('')
     let editBook = false
-    let userId = useSelector(state => state.userId)
+    let myJwt = localStorage.getItem('accessToken')
 
     useEffect(() => {
-        if (userId) return handleAllUserUploads();
-        if (!userId) return navigate('/')
+        if (myJwt) return handleAllUserUploads();
+        if (!myJwt) return navigate('/')
     }, [myUploads])
 
     const handleUpload = () => {

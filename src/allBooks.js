@@ -14,9 +14,10 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges, handleSearched
     let [allbooks, setBooks] = useState('')
     let searchedBook = useSelector(state => state.searchedBook)
     let userId = useSelector(state => state.userId)
+    let myJwt = localStorage.getItem('accessToken')
 
     useEffect(() => {
-        if (userId) {
+        if (myJwt) {
             const getAllbooks = async () => {
                 try {
                     let response = await axios.get("https://book-store-back-end-three.vercel.app/store/allbooks", {})
@@ -29,7 +30,7 @@ const AllBooks = ({ handleSearch, handleLogout, handleAllChanges, handleSearched
             getAllbooks();
             return
         }
-        if (!userId) { return navigate('/') }
+        if (!myJwt) { return navigate('/') }
     }, [])
 
 
