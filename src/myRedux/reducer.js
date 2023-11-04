@@ -1,39 +1,54 @@
 let allState = {
     isRegister: false,
+    isLogged: false,
+    viewedBook: {},
+    allBooks: [],
     myUploads: []
 }
+
 const myReducer = (state = allState, action) => {
     switch (action.type) {
         case "LOGIN":
-            let { username, id } = action.payload
+            const { username } = action.payload
             return {
                 ...state,
-                username,
-                userId: id
-            }
-        case "REGISTER":
-            return {
-                ...state,
-                isRegister: true
+                isLogged: true,
+                username
             }
 
-        case "SIGN_OUT":
+        case "REGISTER":
+            const { value } = action.payload
             return {
                 ...state,
-                isLogin: false,
-                userId: '',
-                username: ''
+                isRegister: value
             }
+
+        case "MESSAGE":
+            const { message } = action.payload
+            return {
+                ...state,
+                message
+            }
+
+        case "ALL_BOOKS":
+            const { allBooks } = action.payload
+            return {
+                ...state,
+                allBooks
+            }
+
+        case "VIEWED_BOOK":
+            const { viewedBook } = action.payload
+            return {
+                ...state,
+                viewedBook
+            }
+
         case "BOOK_SEARCH":
-            let { searchedBook } = action.payload
+            const { searchedBook } = action.payload
             return {
                 ...state,
                 searchedBook
-            }
-        case "CLEAR_SEARCHED":
-            return {
-                ...state,
-                searchedBook: ''
             }
 
         case "MY_UPLOADS":
@@ -42,6 +57,18 @@ const myReducer = (state = allState, action) => {
                 ...state,
                 myUploads
             }
+
+        case "SIGN_OUT":
+            return {
+                ...state,
+                isLogged: false,
+                isRegister: false,
+                viewedBook: {},
+                allBooks: [],
+                myUploads: [],
+                message: ''
+            };
+
     }
     return state
 }

@@ -7,70 +7,97 @@ import { useSelector } from 'react-redux';
 import { GiBookmarklet } from 'react-icons/gi';
 
 
-const HomePage = ({ handle_Login_SignUp }) => {
-    let [user, handleName] = useState('')
-    let [password, handlePass] = useState('')
-    let [register, handleRegister] = useState(false)
-    let userLogin = useSelector(state => state.login)
-    let isRegister = useSelector(state => state.isRegister)
+const HomePage = ({
+    handleAuthentication,
+    handleIsRegister,
+    handleNavigate
+}) => {
+
+    let [userName, setUserName] = useState('')
+    let [password, setPassword] = useState('')
+    const isLogged = useSelector(state => state.isLogged)
+    const isRegister = useSelector(state => state.isRegister)
+    const message = useSelector(state => state.message)
 
     useEffect(() => {
-        if (userLogin) {
-            handleName('');
-            handlePass('');
+        if (isLogged) {
+            return handleNavigate('/books')
         }
-        if (isRegister) {
-            handleRegister(false)
-        }
-        else {
-            handleName('');
-            handlePass('');
-        }
-    }, [userLogin, isRegister])
+    }, [isLogged])
 
-    const logsign = (any) => {
-        switch (any) {
+    const handleAuth = (type) => {
+        switch (type) {
             case 'login':
-                handle_Login_SignUp({ any, userName: user, password })
+                handleAuthentication({ type, userName: userName, password })
+                setUserName('')
+                setPassword('')
                 break;
-
             case 'signup':
-                handle_Login_SignUp({ any, userName: user, password })
-                handleRegister(true)
+                handleAuthentication({ type, userName: userName, password })
+                setUserName('')
+                setPassword('')
                 break;
         }
 
     }
-    return (<Container className='login-page' fluid>
-        <Navbar className='login-navbar'>
-            <Container>
+
+    return (<Container className='bookstore-container' fluid>
+        <Navbar>
+            <div>
                 <GiBookmarklet className='bookBrand' />
-            </Container>
+            </div>
         </Navbar>
 
-        <Row className='intro-row m-2'>
-            <Col className='intro-col text-center'>
+        <Row className='py-2 justify-content-center m-0'>
+            <Col lg={12} md={12} sm={12} xs={12}
+                className='introduction-col text-center'>
                 <h1>Welcome to BookLovers' Haven!</h1>
                 <p>Discover a world of stories, knowledge, and inspiration.</p>
             </Col>
         </Row>
-
-        <Row className='login-row'>
-            <Col className='login-col' lg={6} md={8} sm={10} xs={10}>
-                <input className='border rounded d-block text-center w-100' value={user} placeholder='username' onInput={(event) => handleName(event.target.value)} />
-                <input className='border rounded d-block my-1 text-center w-100' value={password} type="password" placeholder='password' onInput={(event) => handlePass(event.target.value)} />
-                <div className='text-center'> <button className='border rounded py-0' onClick={!register ? () => logsign('login') : () => logsign('signup')}>{!register ? "Login" : "signUp"}</button></div>
-                <div className='text-white text-center'> {!register ? <>Dont have an account? <button className='border-0 bg-transparent text-white' onClick={() => handleRegister(true)}>signup</button></> : ''}</div>
+        {message}
+        <Row className='message-row'>
+            <Col className='message-col'>
+                {message}
             </Col>
         </Row>
 
-        <Container fluid className='footer-container'>
+        <Row className='authentication-row'>
+            <Col className='authentication-col' lg={6} md={8} sm={10} xs={10}>
+                <input className='border rounded d-block m-1 text-center w-100' value={userName} placeholder='username'
+                    onInput={(event) => setUserName(event.target.value)} />
+                <input className='border rounded d-block m-1 text-center w-100' value={password} type="password" placeholder='password'
+                    onInput={(event) => setPassword(event.target.value)} />
+                <div className='text-center'>
+                    <button
+                        onClick={!isRegister ?
+                            () => handleAuth('login')
+                            : () => handleAuth('signup')}>
+                        {!isRegister ? "login" : "sign up"}
+                    </button>
+                </div>
+                <div className='text-white text-center'>
+                    {!isRegister && <>Dont have an account?
+                        <button className='border-0'
+                            onClick={() => handleIsRegister(true)}>signup
+                        </button></>}
+
+                    {isLogged &&
+                        <>Already a member?
+                            <button className='border-0'
+                                onClick={() => handleIsRegister(false)}>login
+                            </button></>
+                    }</div>
+            </Col>
+        </Row>
+
+        <footer className='footer-container'>
             <Row>
                 <Col className="text-center">
                     <p>&copy; {new Date().getFullYear()} BookLovers' Haven. All rights reserved.</p>
                 </Col>
             </Row>
-        </Container>
-    </Container>)
+        </footer>
+    </Container >)
 }
 export default HomePage;

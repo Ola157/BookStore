@@ -3,40 +3,36 @@ import React, { useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import HomePage from './home';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AllBooks from './allBooks';
 import ViewMore from './viewmore';
 import MyUploads from './myUploads';
-import { useDispatch, useSelector } from 'react-redux';
-import { handleAllSearch, handleBookAdd, handleSignOut, handleSignupLogin, handleUserUploads, handleChanges, handleSearchedBook } from './myRedux/myActions';
+import { useDispatch } from 'react-redux';
+import {
+  handleAllSearch,
+  handleBookAdd,
+  handleSignOut,
+  handleUserUploads,
+  handleChanges,
+  handleAuth,
+  handleRegister,
+  handleGetAllBooks,
+  handleNewMessage,
+  handleViewedBook
+} from './myRedux/myActions';
+import BookStorePage from './bookStorePage';
 
 function App() {
-  let userLogin = useSelector(state => state.username)
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userLogin) {
-      navigate(`/allbooks/${userLogin}`)
-    }
-    if (userLogin === '') {
-      navigate('/')
-    }
-  }, [userLogin])
-
-  const handleAllChanges = (type, bookId, data) => {
-    dispatch(handleChanges(type, bookId, data))
-  }
-
-  const handle_Login_SignUp = (data) => {
-    dispatch(handleSignupLogin(data))
+  const handleAuthentication = (data) => {
+    dispatch(handleAuth(data))
   }
 
   const handleAddBook = (data) => {
     dispatch(handleBookAdd(data))
-  }
-
-  const handleLogout = () => {
-    dispatch(handleSignOut())
+    setTimeout(() => {
+      handleFetchUploads()
+    }, 1000)
   }
 
   const handleSearch = (bookTitle) => {
@@ -45,22 +41,69 @@ function App() {
     }, 2000);
   }
 
-  const handleAllUserUploads = () => {
+  const handleFetchUploads = () => {
     dispatch(handleUserUploads())
   }
 
-  const handleSearched = () => {
-    dispatch(handleSearchedBook())
+  const handleAllChanges = (type, bookId, data) => {
+    dispatch(handleChanges(type, bookId, data))
+    setTimeout(() => {
+      handleFetchUploads()
+    }, 1000)
   }
 
+  const handleIsRegister = (value) => {
+    dispatch(handleRegister(value))
+  }
+
+  const handleFetchBooks = () => {
+    dispatch(handleGetAllBooks())
+  }
+
+  const getViewedBook = (bookId) => {
+    dispatch(handleViewedBook(bookId))
+  }
+
+  const handleMessage = (message) => {
+    dispatch(handleNewMessage(message))
+  }
+
+  const handleNavigate = (page) => {
+    navigate(page)
+  }
+
+  const handleLogout = () => {
+    dispatch(handleSignOut())
+    localStorage.removeItem('accessToken')
+    handleNavigate('/')
+  }
 
 
   return (
     <Routes>
-      <Route path='/*' element={<HomePage handle_Login_SignUp={handle_Login_SignUp} />} />
-      <Route path='/allbooks/:userName' element={<AllBooks handleSearched={handleSearched} handleLogout={handleLogout} handleSearch={handleSearch} handleAllChanges={handleAllChanges} />} />
-      <Route path='/viewmore/:bookId/:userName' element={<ViewMore handleAllChanges={handleAllChanges} />} />
-      <Route path='/myUploads/:userName' element={<MyUploads handleLogout={handleLogout} handleAllChanges={handleAllChanges} handleAddBook={handleAddBook} handleAllUserUploads={handleAllUserUploads} />} />
+      <Route path='/*' element={<HomePage
+        handleAuthentication={handleAuthentication}
+        handleIsRegister={handleIsRegister}
+        handleNavigate={handleNavigate} />} />
+
+      <Route path='/books' element={<BookStorePage
+        handleFetchBooks={handleFetchBooks}
+        handleLogout={handleLogout}
+        handleNavigate={handleNavigate}
+        handleSearch={handleSearch} />} />
+
+      <Route path='/viewmore/:bookId' element={<ViewMore
+        getViewedBook={getViewedBook}
+        handleNavigate={handleNavigate}
+
+      />} />
+      <Route path='/myuploads' element={<MyUploads
+        handleNavigate={handleNavigate}
+        handleLogout={handleLogout}
+        handleAllChanges={handleAllChanges}
+        handleAddBook={handleAddBook}
+        handleFetchUploads={handleFetchUploads}
+        handleMessage={handleMessage} />} />
     </Routes>
   );
 }
