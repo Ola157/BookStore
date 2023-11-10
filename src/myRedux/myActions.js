@@ -207,6 +207,10 @@ export const handleAllSearch = (bookTitle) => (dispatch) => {
         }).catch((error) => { console.error(error) })
 }
 
+export const clearSearch = () => (dispatch) => {
+    dispatch({ type: "BOOK_SEARCH", payload: { searchedBook: '' } })
+}
+
 export const handleNewMessage = (message) => (dispatch) => {
     dispatch({ type: "MESSAGE", payload: { message } })
     setTimeout(() => {

@@ -16,7 +16,8 @@ import {
   handleRegister,
   handleGetAllBooks,
   handleNewMessage,
-  handleViewedBook
+  handleViewedBook,
+  clearSearch
 } from './myRedux/myActions';
 import BookStorePage from './bookStorePage';
 
@@ -40,6 +41,9 @@ function App() {
     setTimeout(() => {
       dispatch(handleAllSearch(bookTitle));
     }, 2000);
+
+    if (!bookTitle) return dispatch(clearSearch())
+
   }
 
   const handleFetchUploads = () => {
@@ -71,6 +75,7 @@ function App() {
 
   const handleNavigate = (page) => {
     navigate(page)
+    dispatch(clearSearch())
   }
 
   const handleLogout = () => {
