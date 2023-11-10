@@ -55,9 +55,9 @@ const HomePage = ({
                 <p>Discover a world of stories, knowledge, and inspiration.</p>
             </Col>
         </Row>
-        {message}
-        <Row className='message-row'>
-            <Col className='message-col'>
+
+        <Row className='message-row p-2'>
+            <Col lg={4} md={6} sm={8} xs={8} className='message-col'>
                 {message}
             </Col>
         </Row>

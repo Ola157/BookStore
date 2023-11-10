@@ -19,11 +19,16 @@ export const handleAuth = (data) => (dispatch) => {
                     const { accessToken, username, message } = response.data
                     if (accessToken && username) {
                         localStorage.setItem('accessToken', accessToken)
-                        return dispatch({ type: "LOGIN", payload: { username } })
+                        dispatch({ type: "LOGIN", payload: { username } })
                     }
                     else {
-                        return dispatch({ type: "MESSAGE", payload: { message } })
+                        dispatch({ type: "MESSAGE", payload: { message } })
+
+                        setTimeout(() => {
+                            dispatch({ type: "MESSAGE", payload: { message: '' } })
+                        }, 2000)
                     }
+
                 }).catch((err) => {
                     console.error(err)
                 })
@@ -38,8 +43,16 @@ export const handleAuth = (data) => (dispatch) => {
                 }).then((response) => {
                     const { message } = response.data
                     if (message !== 'User Already Exist') {
-                        return dispatch({ type: "REGISTER", payload: { value: true } })
-                    } else { return dispatch({ type: "MESSAGE", payload: { message } }) }
+                        dispatch({ type: "MESSAGE", payload: { message } })
+
+                        dispatch({ type: "REGISTER", payload: { value: true } })
+                    } else if (message == 'User Already Exist') {
+                        dispatch({ type: "MESSAGE", payload: { message } })
+                    }
+                    setTimeout(() => {
+                        dispatch({ type: "MESSAGE", payload: { message: '' } })
+                    }, 2000)
+
                 })
                 .catch((error) => {
                     console.error(error)
@@ -187,15 +200,23 @@ export const handleAllSearch = (bookTitle) => (dispatch) => {
             if (searchedBook) { return dispatch({ type: "BOOK_SEARCH", payload: { searchedBook } }) }
             else {
                 dispatch({ type: "MESSAGE", payload: { message } })
+                setTimeout(() => {
+                    dispatch({ type: "MESSAGE", payload: { message: '' } })
+                }, 2000)
             }
         }).catch((error) => { console.error(error) })
 }
 
 export const handleNewMessage = (message) => (dispatch) => {
     dispatch({ type: "MESSAGE", payload: { message } })
+    setTimeout(() => {
+        dispatch({ type: "MESSAGE", payload: { message: '' } })
+    }, 2000)
 }
 
 export const handleSignOut = () => (dispatch) => {
     dispatch({ type: "SIGN_OUT" })
 }
+
+
 

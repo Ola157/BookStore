@@ -98,22 +98,18 @@ nav .bookBrand {
 }
 
 .message-row {
-    opacity: 1;
-    color: red;
-    background-color: aqua;
-    animation: fadeOut 5s forwards;
+    display: flex;
+    justify-content: center;
 }
 
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
+.message-col {
+    background-color: #f4e9d8;
+    border-radius: 2px;
+    color: rgb(66, 54, 54);
+    display: flex;
+    justify-content: center;
+    font-weight: 800;
 }
-
 
 .menu {
     display: flex;
