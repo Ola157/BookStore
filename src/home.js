@@ -77,17 +77,20 @@ const HomePage = ({
                     </button>
                 </div>
                 <div className='text-white text-center'>
-                    {!isRegister && <>Dont have an account?
-                        <button className='border-0'
-                            onClick={() => handleIsRegister(true)}>signup
-                        </button></>}
-
-                    {isLogged &&
-                        <>Already a member?
+                    {!isRegister ?
+                        <>Dont have an account?
+                            <button className='border-0'
+                                onClick={() => handleIsRegister(true)}>signup
+                            </button>
+                        </> :
+                        <>
+                            Existing User?
                             <button className='border-0'
                                 onClick={() => handleIsRegister(false)}>login
-                            </button></>
-                    }</div>
+                            </button>
+                        </>
+                    }
+                </div>
             </Col>
         </Row>
 

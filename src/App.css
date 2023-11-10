@@ -99,22 +99,18 @@ nav .bookBrand {
 
 .message-row {
     opacity: 1;
-    /* Start with full opacity */
     color: red;
     background-color: aqua;
     animation: fadeOut 5s forwards;
-    /* Apply the fade animation for 5 seconds */
 }
 
 @keyframes fadeOut {
     0% {
         opacity: 1;
-        /* Start with full opacity */
     }
 
     100% {
         opacity: 0;
-        /* End with no opacity (fully transparent) */
     }
 }
 
