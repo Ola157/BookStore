@@ -25,16 +25,15 @@ const BookStorePage = ({
     }, [])
 
     return (<Container fluid className='bookstore-container'>
-        <Navbar expand="lg">
-            <Navbar.Brand onClick={() => handleNavigate(`/books`)}>
+        <Navbar expand="lg" className='p-2'>
+            <Navbar.Brand onClick={() => handleNavigate('/books')}>
                 <GiBookmarklet className='bookBrand' />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <NavDropdown id="user-dropdown">
-                        <NavDropdown.Header>{userName}</NavDropdown.Header>
-                        <NavDropdown.Item onClick={() => handleNavigate(`/myuploads`)}>My Uploads</NavDropdown.Item>
+                <Nav className="ml-auto text-center">
+                    <NavDropdown title={userName} id="user-dropdown">
+                        <NavDropdown.Item onClick={() => handleNavigate('/myuploads')}>My Uploads</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                     </NavDropdown>

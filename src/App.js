@@ -38,11 +38,12 @@ function App() {
   }
 
   const handleSearch = (bookTitle) => {
+    if (bookTitle.trim() === '') return dispatch(clearSearch())
+
     setTimeout(() => {
       dispatch(handleAllSearch(bookTitle));
     }, 2000);
 
-    if (!bookTitle) return dispatch(clearSearch())
 
   }
 
