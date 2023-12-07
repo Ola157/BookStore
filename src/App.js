@@ -26,25 +26,21 @@ function App() {
   const navigate = useNavigate();
 
 
+
   const handleAuthentication = (data) => {
     dispatch(handleAuth(data))
   }
 
   const handleAddBook = (data) => {
     dispatch(handleBookAdd(data))
-    setTimeout(() => {
-      handleFetchUploads()
-    }, 1000)
   }
 
   const handleSearch = (bookTitle) => {
-    if (bookTitle.trim() === '') return dispatch(clearSearch())
+    dispatch(handleAllSearch(bookTitle));
+  }
 
-    setTimeout(() => {
-      dispatch(handleAllSearch(bookTitle));
-    }, 2000);
-
-
+  const handleClearSearch = () => {
+    dispatch(clearSearch())
   }
 
   const handleFetchUploads = () => {
@@ -53,9 +49,7 @@ function App() {
 
   const handleAllChanges = (type, bookId, data) => {
     dispatch(handleChanges(type, bookId, data))
-    setTimeout(() => {
-      handleFetchUploads()
-    }, 1000)
+
   }
 
   const handleIsRegister = (value) => {
@@ -88,20 +82,24 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/*' element={<HomePage
+      <Route path='/p' element={<HomePage
         handleAuthentication={handleAuthentication}
         handleIsRegister={handleIsRegister}
         handleNavigate={handleNavigate} />} />
 
-      <Route path='/books' element={<BookStorePage
+      <Route path='/*' element={<BookStorePage
         handleFetchBooks={handleFetchBooks}
         handleLogout={handleLogout}
         handleNavigate={handleNavigate}
-        handleSearch={handleSearch} />} />
+        handleSearch={handleSearch}
+        handleClearSearch={handleClearSearch}
+      />} />
 
       <Route path='/viewmore/:bookId' element={<ViewMore
         getViewedBook={getViewedBook}
         handleNavigate={handleNavigate}
+        handleSearch={handleSearch}
+        handleClearSearch={handleClearSearch}
 
       />} />
       <Route path='/myuploads' element={<MyUploads

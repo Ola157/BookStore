@@ -3,7 +3,7 @@ let allState = {
     isLogged: false,
     viewedBook: {},
     allBooks: [],
-    myUploads: []
+    userUploads: []
 }
 
 const myReducer = (state = allState, action) => {
@@ -52,10 +52,10 @@ const myReducer = (state = allState, action) => {
             }
 
         case "MY_UPLOADS":
-            let { myUploads } = action.payload
+            let { userUploads } = action.payload
             return {
                 ...state,
-                myUploads
+                userUploads
             }
 
         case "SIGN_OUT":
@@ -65,7 +65,7 @@ const myReducer = (state = allState, action) => {
                 isRegister: false,
                 viewedBook: {},
                 allBooks: [],
-                myUploads: [],
+                userUploads: [],
                 message: ''
             };
 

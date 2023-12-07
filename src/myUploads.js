@@ -14,34 +14,31 @@ const MyUploads = ({
     handleNavigate,
     handleMessage }) => {
 
-    const myUploads = useSelector(state => state.myUploads)
+    const myUploads = useSelector(state => state.userUploads)
     const userName = useSelector(state => state.username)
 
-    let [authorName, setAuthorName] = useState('')
-    let [bookTitle, setBookTitle] = useState('')
-    let [bookDescr, setBookDescr] = useState('')
-    let [bookpages, setBookPages] = useState('')
-    let [bookGenre, setBookGenre] = useState('')
-
-    let [newAuthorName, setNewAuthorName] = useState('')
-    let [newBookTitle, setNewBookTitle] = useState('')
-    let [newBookDescr, setNewBookDescr] = useState('')
-    let [newBookpages, setNewBookPages] = useState('')
-    let [newBookGenre, setNewBookGenre] = useState('')
-    let editBook = false
+    let [author, setAuthor] = useState('')
+    let [title, setTitle] = useState('')
+    let [description, setDescription] = useState('')
+    let [genre, setGenre] = useState('')
+    let [image, setImage] = useState('')
 
     useEffect(() => {
         handleFetchUploads();
     }, [])
 
+    const handleImage = e => {
+        setImage(e.target.files[0])
+    }
+
     const handleUpload = () => {
-        if (authorName && bookTitle && bookpages && bookDescr && bookGenre) {
-            handleAddBook({ authorName, bookTitle, bookpages, bookGenre, bookDescr, editBook })
-            setBookTitle('')
-            setAuthorName('')
-            setBookPages('')
-            setBookDescr('')
-            setBookGenre('')
+        if (author && title && description && genre) {
+            handleAddBook({ author, title, cover: image, genre, description })
+            setTitle('')
+            setAuthor('')
+            setDescription('')
+            setGenre('')
+            setImage('')
         }
         else { handleMessage({ message: 'Inputs Cant Be Blank' }) }
     }
@@ -56,12 +53,18 @@ const MyUploads = ({
                 break;
             case 'save':
                 const data = {
-                    authorName: newAuthorName,
-                    bookTitle: newBookTitle,
-                    bookDescr: newBookDescr,
-                    bookpages: newBookpages,
-                    bookGenre: newBookGenre
+                    author,
+                    title,
+                    description,
+                    genre,
+                    cover: image
                 }
+                if (!data) return
+                setTitle('')
+                setAuthor('')
+                setDescription('')
+                setGenre('')
+                setImage('')
                 handleAllChanges(type, bookId, data)
                 break;
             case 'cancel':
@@ -69,119 +72,148 @@ const MyUploads = ({
                 break;
         }
     }
+
+    console.log(myUploads)
     return (<Container fluid className='bookstore-container'>
-        <Navbar expand="lg">
-            <Navbar.Brand onClick={() => handleNavigate(`/books`)}>
-                <GiBookmarklet className='bookBrand' />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <NavDropdown id="user-dropdown">
-                        <NavDropdown.Header>{userName}</NavDropdown.Header>
-                        <NavDropdown.Item onClick={() => handleNavigate(`/myUploads`)}>My Uploads</NavDropdown.Item>
-                    </NavDropdown>
-                </Nav>
-            </Navbar.Collapse>
-        </Navbar>
 
-        <Row className='uploads-row m-1'>
+        <nav expand="lg" className='bookstore-nav'>
+            <span onClick={() => handleNavigate('/')} className='span-brand'>
+                <GiBookmarklet size={24} /> <h2 className='d-inline'>BookLover</h2>
+            </span>
+
+            {/* <div>
+                <button onClick={() => handleNavigate('/myuploads')}></button>
+                <button onClick={handleLogout}></button>
+
+            </div> */}
+            <div></div>
+        </nav>
+
+        <Row className='bookupload-row'>
             <Col lg={2} md={2} sm={12} xs={12}>
-                <input className='border rounded m-1 text-center w-100' value={authorName} onInput={(event) => setAuthorName(event.target.value)} placeholder='author name' />
+                <input className='text-center w-100' value={title} onInput={(event) => setTitle(event.target.value)} placeholder='Title' />
             </Col>
             <Col lg={2} md={2} sm={12} xs={12}>
-                <input className='border rounded m-1 text-center w-100' value={bookTitle} onInput={(event) => setBookTitle(event.target.value)} placeholder='title' />
+                <input className='text-center w-100' value={author} onInput={(event) => setAuthor(event.target.value)} placeholder='Author' />
             </Col>
             <Col lg={2} md={2} sm={12} xs={12}>
-                <input className='border rounded m-1 text-center w-100' value={bookpages} onInput={(event) => setBookPages(event.target.value)} placeholder='page numbers' />
+                <input className='text-center w-100' value={description} onInput={(event) => setDescription(event.target.value)} placeholder='Description' />
             </Col>
             <Col lg={2} md={2} sm={12} xs={12}>
-                <input className='border rounded m-1 text-center w-100' value={bookDescr} onInput={(event) => setBookDescr(event.target.value)} placeholder='book description' />
+                <select className='text-center w-100'
+                    value={genre} onInput={(event) => setGenre(event.target.value)}>
+                    <option>Genre</option>
+                    <option value='Action'>Action</option>
+                    <option value='Adventure'>Adventure</option>
+                    <option value='Biography'>Biography</option>
+                    <option value='Fiction'>Fiction</option>
+                    <option value='Fantasy'>Fantasy</option>
+                    <option value='Horror'>Horror</option>
+                    <option value='Mystery'>Mystery</option>
+                    <option value='Non-Fiction'>Non-Fiction</option>
+                    <option value='Literature'>Literature</option>
+                    <option value='Romance'>Romance</option>
+                    <option value='Thriller'>Thriller</option>
+                </select>
             </Col>
             <Col lg={2} md={2} sm={12} xs={12}>
-                <input className='border rounded m-1 text-center w-100' value={bookGenre} onInput={(event) => setBookGenre(event.target.value)} placeholder='genre' />
+                <label htmlFor='image'>{!image.name ? 'Select Image' : image.name}</label>
+                <input className='d-none' type='file' id='image' onChange={handleImage} />
             </Col>
-            <Col lg={2} md={2} sm={12} xs={12} className='text-center my-1'>
-                <button className='border rounded w-50' onClick={() => handleUpload()}>Add</button>
+            <Col lg={2} md={2} sm={12} xs={12} className='text-center'>
+                <button onClick={() => handleUpload()}>Add</button>
             </Col>
         </Row>
 
-        <Row className='back-row m-1'>
-            <Col className='back-col'>
-                <button onClick={() => handleNavigate(`/books`)} className='back-button'>
-                    <><PiBackspace /> <span>Back</span></>
-                </button>
-            </Col>
+        <Row className='return-row m-0'>
+            <button onClick={() => handleNavigate(`/`)} >
+                <PiBackspace size={20} /> <span>Back</span>
+            </button>
         </Row>
 
-        <Row className='justify-content-center m-1'>
+        <section className='myuploads-row'>
+
             {myUploads.length > 0 ?
-                myUploads.map((book, i) =>
-                    <Col lg={2} md={3} sm={3} xs={12} key={i} className='border rounded p-1 text-center m-1 bookUploads'>
-                        <Col className='p-1'><span>{book.editBook === false ?
-                            <>
-                                <span className='tag'>Title</span>    {book.bookTitle}</> :
-                            <input className='border rounded text-center' placeholder='title'
-                                onInput={(event) => setNewBookTitle(event.target.value)} />}
+                myUploads.map((book, i) => (
+                    <div key={i} className='mybookUploads-section'>
+
+                        {book.edit === false ?
+                            <img src={`https://expressbuckett.s3.eu-west-2.amazonaws.com/bookstore/${book.cover}`} /> :
+                            <span>
+                                <label htmlFor='image'>{!image.name ? 'Select Image' : image.name}</label>
+                                <input className='d-none' type='file' name='image' onChange={handleImage} />
+                            </span>
+                        }
+
+                        <span className='p-1'>
+                            {book.edit === false ?
+                                <span className='tag'> {book.title}</span> :
+                                <input className='text-center' placeholder='Title' value={title}
+                                    onInput={(event) => setTitle(event.target.value)} />}
                         </span>
-                        </Col>
 
-                        <hr className='my-0'></hr>
-                        <Col className='p-1'>
-                            <span className='tag'>Author:</span> <span>{book.editBook === false ?
-                                book.authorName :
-                                <input className='border rounded text-center' placeholder='name' onInput={(event) => setNewAuthorName(event.target.value)} />
-                            }</span>
-                        </Col>
+                        <span className='p-1'>
+                            {book.edit === false ?
+                                <span className='tag'>  {book.author} </span> :
+                                <input className='text-center' placeholder='Author' value={author}
+                                    onInput={(event) => setAuthor(event.target.value)} />
+                            }
+                        </span>
 
-                        <hr className='my-0'></hr>
-                        <Col className='p-1'>
-                            <span>{book.editBook === false ?
-                                <><span className='tag'>pages </span>{book.bookpages} </> :
-                                <input className='border rounded text-center' placeholder='page numbers' onInput={(event) => setNewBookPages(event.target.value)} />}
-                            </span></Col>
+                        <span className='p-1'>
+                            {book.edit === false ?
+                                <span className='tag'>{book.genre}</span> :
+                                <select className='text-center w-100'
+                                    value={genre} onInput={(event) => setGenre(event.target.value)}>
+                                    <option>Genre</option>
+                                    <option value='Action'>Action</option>
+                                    <option value='Adventure'>Adventure</option>
+                                    <option value='Biography'>Biography</option>
+                                    <option value='Fiction'>Fiction</option>
+                                    <option value='Fantasy'>Fantasy</option>
+                                    <option value='Horror'>Horror</option>
+                                    <option value='Mystery'>Mystery</option>
+                                    <option value='Non-Fiction'>Non-Fiction</option>
+                                    <option value='Literature'>Literature</option>
+                                    <option value='Romance'>Romance</option>
+                                    <option value='Thriller'>Thriller</option>
+                                </select>}
+                        </span>
 
-                        <hr className='my-0'></hr>
-                        <Col className='p-1'>
-                            <span className='tag'>Genre</span>  <span>{book.editBook === false ?
-                                book.bookGenre : <input className='border rounded text-center' placeholder='genre' onInput={(event) => setNewBookGenre(event.target.value)} />}
-                            </span></Col>
+                        <span className='p-1'>
+                            {book.edit === false ?
+                                <span className='tag'>{book.description}</span> :
+                                <input className='text-center' placeholder='Description' value={description}
+                                    onInput={(event) => setDescription(event.target.value)} />}
+                        </span>
 
-                        <hr className='my-0'></hr>
-                        <Col className='p-1'>
-                            <span className='tag'>Description</span>  <span>{book.editBook === false ?
-                                book.bookDescr : <input className='border rounded text-center' placeholder='description' onInput={(event) => setNewBookDescr(event.target.value)} />}
-                            </span></Col>
-
-                        <hr className='my-0'></hr>
-                        {!book.editBook ?
-                            <Col className='text-center m-1'>
+                        {!book.edit ?
+                            <span className='btn-col'>
                                 <button className='btn-edit'
                                     onClick={() => handleChanges('edit', book._id)}>Edit
                                 </button>
                                 <button className='btn-delete' onClick={() => handleChanges('delete', book._id)}>Delete</button>
-                            </Col>
+                            </span>
                             :
-                            <Col className='text-center m-1'>
+                            <span className='btn-col'>
                                 <button className='btn-save'
-                                    onClick={() => handleChanges('save', book._id)}> Save Changes
+                                    onClick={() => handleChanges('save', book._id)}> Save
                                 </button>
                                 <button className='btn-cancel'
                                     onClick={() => handleChanges('cancel', book._id)}>Cancel</button>
-                            </Col>}
-                    </Col>)
+                            </span>
+                        }
+                    </div>))
                 :
-                <Col lg={4} md={4} sm={12} xs={12} className='bg-white border rounded p-1 text-center m-1 bg-white'> User Added No Books Yet</Col>
+                <Col lg={4} md={4} sm={12} xs={12} className='bg-white p-1 text-center m-1 bg-white'> User Added No Books Yet</Col>
             }
-        </Row>
+        </section>
 
-        <footer className='footer-container'>
-            <Row>
-                <Col className="text-center">
-                    <p>&copy; {new Date().getFullYear()} BookLovers' Haven. All rights reserved.</p>
-                </Col>
-            </Row>
-        </footer>
+        <Row className='footer-row'>
+            <Col className="text-center">
+                <p>&copy; {new Date().getFullYear()} BookLovers' Haven. All rights reserved.</p>
+            </Col>
+        </Row>
     </Container >
     )
 }

@@ -63,7 +63,6 @@ export const handleAuth = (data) => (dispatch) => {
 }
 
 export const handleGetAllBooks = () => (dispatch) => {
-
     axios.get("https://book-store-back-end-three.vercel.app/store/allbooks", null)
         .then((response) => {
             const { allBooks } = response.data
@@ -87,84 +86,83 @@ export const handleChanges = (type, bookId, data) => {
 
     return async (dispatch) => {
         let myJwt = localStorage.getItem('accessToken')
-        switch (type) {
-            case 'edit':
-                try {
-                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${bookId}`, null, {
+        let response;
+        try {
+            switch (type) {
+                case 'edit':
+
+                    response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/edit/${bookId}`, null, {
                         headers: {
                             'Authorization': `Bearer ${myJwt}`,
                         }
                     })
-                    let { myUploads } = response.data
-                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
-                }
-                catch (err) {
-                    console.error(err)
-                }
-                break;
-            case 'delete':
-                try {
-                    let response = await axios.delete(`https://book-store-back-end-three.vercel.app/store/delete/${bookId}`,
+
+                    break;
+
+                case 'delete':
+                    response = await axios.delete(`https://book-store-back-end-three.vercel.app/store/delete/${bookId}`,
+
                         {
                             headers: {
                                 'Authorization': `Bearer ${myJwt}`
                             }
                         })
-                    let { myUploads } = response.data
-                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
-                }
-                catch (err) {
-                    console.error(err)
-                }
-                break;
-            case 'save':
-                try {
-                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/save/${bookId}`, { data }, {
+
+                    break;
+
+                case 'save':
+                    let formData = new FormData()
+
+                    for (let key in data) {
+                        formData.append(key, data[key]);
+                    }
+
+                    response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/save/${bookId}`, formData, {
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${myJwt}`
                         }
                     })
-                    let { myUploads } = response.data
-                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
-                }
 
-                catch (err) {
-                    console.error(err)
-                }
-                break;
-            case 'cancel':
-                try {
-                    let response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/cancel/${bookId}`, null, {
+                    break;
+
+                case 'cancel':
+                    response = await axios.patch(`https://book-store-back-end-three.vercel.app/store/cancel/${bookId}`, null, {
                         headers: {
                             'Authorization': `Bearer ${myJwt}`,
                         }
                     })
-                    let { myUploads } = response.data
-                    dispatch({ type: 'MY_UPLOADS', payload: { myUploads } })
-                }
 
-                catch (err) {
-                    console.error(err)
-                }
-                break;
-
-        }
+                    break;
+            }
+            let { userUploads } = response.data
+            dispatch({ type: "MY_UPLOADS", payload: { userUploads } })
+        } catch (err) { console.error(err) }
     }
 }
 
-export const handleBookAdd = (data) => async () => {
-    let { authorName, bookTitle, bookpages, bookGenre, bookDescr, editBook } = data
+export const handleBookAdd = (data) => async (dispatch) => {
+    let { author, title, cover, genre, description } = data
     let myJwt = localStorage.getItem('accessToken')
+
+    let formData = new FormData()
+
+    for (let key in data) {
+        formData.append(key, data[key]);
+    }
+
     try {
-        await axios.post("https://book-store-back-end-three.vercel.app/store/addbook",
-            { authorName, bookTitle, bookpages, bookGenre, bookDescr, editBook },
+        const response = await axios.post("https://book-store-back-end-three.vercel.app/store/addbook", formData,
+
             {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${myJwt}`
                 }
             })
+
+        let { userUploads } = response.data
+        dispatch({ type: "MY_UPLOADS", payload: { userUploads } })
 
     }
     catch (err) {
@@ -173,6 +171,7 @@ export const handleBookAdd = (data) => async () => {
 }
 
 export const handleUserUploads = () => async (dispatch) => {
+
     const myJwt = localStorage.getItem('accessToken')
     try {
         let response = await axios.get(`https://book-store-back-end-three.vercel.app/user/fetchuserUploads/`, {
@@ -180,23 +179,23 @@ export const handleUserUploads = () => async (dispatch) => {
                 'Authorization': `Bearer ${myJwt}`
             }
         })
-        let { myUploads } = response.data
-        if (myUploads) {
-            dispatch({ type: "MY_UPLOADS", payload: { myUploads } })
-        }
+        let { userUploads } = response.data
+        dispatch({ type: "MY_UPLOADS", payload: { userUploads } })
     }
     catch (err) { console.error(err) }
 }
 
 export const handleAllSearch = (bookTitle) => (dispatch) => {
-    if (!bookTitle) return
     axios.get(`https://book-store-back-end-three.vercel.app/store/searchBook/${bookTitle}`,
+
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             }
         }).then((response) => {
             const { searchedBook, message } = response.data
+
+
             if (searchedBook) { return dispatch({ type: "BOOK_SEARCH", payload: { searchedBook } }) }
             else {
                 dispatch({ type: "MESSAGE", payload: { message } })
