@@ -185,7 +185,7 @@ export const handleUserUploads = () => async (dispatch) => {
     catch (err) { console.error(err) }
 }
 
-export const handleAllSearch = (bookTitle) => (dispatch) => {
+export const handleAllSearch = (bookTitle) => async (dispatch) => {
     axios.get(`https://book-store-back-end-three.vercel.app/store/searchBook/${bookTitle}`,
 
         {
